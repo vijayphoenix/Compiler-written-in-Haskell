@@ -33,7 +33,7 @@ module AST (
 -- Call : Name ( [Args] ) 
 
 -- Op : + | - | * | / 
--- Args : Name[, Args]
+-- Args : Expr[, Args]
 
 -- LiteralStmt : StrLiteral  | IntLiteral 
 -- IntLiteral  : integer
@@ -42,6 +42,17 @@ module AST (
 -- Name : ident
 -- ArgList : Type Name[, ArgList]
 
+data Module 
+    = Command Expr 
+    | Method  Func 
+
+data Func 
+    = Func {
+        fname :: Name ,
+        argList:: ArgList,
+        retType:: Type ,
+        body   :: [Expr]
+    }
 
 data Expr
     = DeclarationStmt   Declaration
@@ -58,13 +69,13 @@ data Op
     deriving (Show)
 
 data Type 
-    = Int 
-    | String 
+    = IntC 
+    | StringC 
     deriving (Show)
 
 data Literal 
     = StrLiteral String
-    | IntLiteral Int
+    | IntLiteral Integer
     deriving (Show)
 
 
@@ -77,7 +88,8 @@ type Args = [Expr]
 data Declaration
     = ExternDecl {
         efName :: Name ,
-        efArgsList :: ArgList
+        efArgsList :: ArgList,
+        retT :: Type
     }
     | VarDecl { 
         vType :: Type, 
@@ -93,7 +105,7 @@ data FuncCall
     }
     | BinOpCall {
         op     :: Op ,
-        lhs    :: Expr ,
+        lhs    :: Expr,
         rhs    :: Expr
     }
     deriving (Show)
@@ -127,7 +139,7 @@ argsPrint = show
 showExpr :: Expr -> String
 showExpr = show
 
-externDeclPrint (ExternDecl f a) = "extern " ++ f ++ " -> " ++ (argListPrint a)
+externDeclPrint (ExternDecl f a _) = "extern " ++ f ++ " -> " ++ (argListPrint a)
 varDeclPrint (VarDecl t l) = (show t) ++ " " ++ (vListPrint l)
 
 
@@ -135,8 +147,8 @@ callPrint (Call c a) = "call " ++ (show c) ++ " -> " ++ (argsPrint a)
 binOpCallPrint (BinOpCall op l r) = (show op) ++ " -> " ++ (showExpr l) ++ " " ++ (showExpr r)
 
 -- Tests
-externDecl  = ExternDecl "sin" [(Int, "arg1")]
-varDecl     = VarDecl String ["arg1", "arg2"]
+externDecl  = ExternDecl "sin" [(IntC, "arg1")]
+varDecl     = VarDecl StringC ["arg1", "arg2"]
 literal     = StrLiteral "adf"
 literalStmt = LiteralStmt literal
 call        = Call "func" [literalStmt]
