@@ -8,6 +8,7 @@ module AST (
     ArgList,
     Args,
     Declaration(..),
+    BinOpCall(..),
     FuncCall(..)
 ) where 
 
@@ -57,6 +58,7 @@ data Func
 data Expr
     = DeclarationStmt   Declaration
     | FuncCallStmt      FuncCall
+    | BinOpCallStmt     BinOpCall
     | LiteralStmt       Literal 
     deriving (Show)
 
@@ -99,16 +101,18 @@ data Declaration
 
 
 data FuncCall
-    = Call {
+    = FuncCall {
         callee :: Name ,
         args   :: Args
     }
-    | BinOpCall {
+    deriving (Show)
+
+data BinOpCall 
+    = BinOpCall {
         op     :: Op ,
         lhs    :: Expr,
         rhs    :: Expr
-    }
-    deriving (Show)
+    } deriving (Show)
 
 
 -- | For Debugging Purposes
@@ -118,37 +122,37 @@ data FuncCall
  -- instance Show Declaration where 
  --    show c@(ExternDecl a) = show 
 
-argListPrint :: ArgList -> String 
-argListPrint [] = ""
-argListPrint (x:farr) = (show $ fst x) ++ " " ++ (snd x) ++ ", " ++ (argListPrint farr)
+-- argListPrint :: ArgList -> String 
+-- argListPrint [] = ""
+-- argListPrint (x:farr) = (show $ fst x) ++ " " ++ (snd x) ++ ", " ++ (argListPrint farr)
 
 
-vListPrint :: VList -> String 
-vListPrint [] = ""
-vListPrint (x:fx) = x ++ ", " ++ (vListPrint fx)
+-- vListPrint :: VList -> String 
+-- vListPrint [] = ""
+-- vListPrint (x:fx) = x ++ ", " ++ (vListPrint fx)
 
 
--- instance Show 
+-- -- instance Show 
 
--- argsPrint :: Args -> String 
--- argsPrint [] = ""
--- argsPrint (x:fx) = (exprPrint x) ++ ", " ++ (argsPrint fx)
+-- -- argsPrint :: Args -> String 
+-- -- argsPrint [] = ""
+-- -- argsPrint (x:fx) = (exprPrint x) ++ ", " ++ (argsPrint fx)
 
-argsPrint :: Args -> String
-argsPrint = show 
-showExpr :: Expr -> String
-showExpr = show
+-- argsPrint :: Args -> String
+-- argsPrint = show 
+-- showExpr :: Expr -> String
+-- showExpr = show
 
-externDeclPrint (ExternDecl f a _) = "extern " ++ f ++ " -> " ++ (argListPrint a)
-varDeclPrint (VarDecl t l) = (show t) ++ " " ++ (vListPrint l)
+-- externDeclPrint (ExternDecl f a _) = "extern " ++ f ++ " -> " ++ (argListPrint a)
+-- varDeclPrint (VarDecl t l) = (show t) ++ " " ++ (vListPrint l)
 
 
-callPrint (Call c a) = "call " ++ (show c) ++ " -> " ++ (argsPrint a)
-binOpCallPrint (BinOpCall op l r) = (show op) ++ " -> " ++ (showExpr l) ++ " " ++ (showExpr r)
+-- callPrint (Call c a) = "call " ++ (show c) ++ " -> " ++ (argsPrint a)
+-- binOpCallPrint (BinOpCall op l r) = (show op) ++ " -> " ++ (showExpr l) ++ " " ++ (showExpr r)
 
--- Tests
-externDecl  = ExternDecl "sin" [(IntC, "arg1")]
-varDecl     = VarDecl StringC ["arg1", "arg2"]
-literal     = StrLiteral "adf"
-literalStmt = LiteralStmt literal
-call        = Call "func" [literalStmt]
+-- -- Tests
+-- externDecl  = ExternDecl "sin" [(IntC, "arg1")]
+-- varDecl     = VarDecl StringC ["arg1", "arg2"]
+-- literal     = StrLiteral "adf"
+-- literalStmt = LiteralStmt literal
+-- call        = Call "func" [literalStmt]

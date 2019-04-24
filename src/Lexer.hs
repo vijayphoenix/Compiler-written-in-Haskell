@@ -5,6 +5,7 @@ module Lexer (
     reservedOp,
     stringLiteral,
     integer,
+    paren,
     Parser(..),
     parse
 ) where 
@@ -38,3 +39,6 @@ stringLiteral = Tok.stringLiteral lexer
 --  Returns the value of the number.
 integer :: Parser Integer 
 integer = Tok.integer lexer
+
+paren :: Parser a -> Parser a 
+paren = Tok.parens lexer

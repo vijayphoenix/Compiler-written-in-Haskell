@@ -6,81 +6,59 @@ import Text.Parsec.Combinator
 import Text.Parsec.Char
 import Text.Parsec
 import qualified Text.Parsec.Token as Tok
+import qualified Data.Map as Map 
 import AST 
 
--- literalParser :: Type -> Parser Literal 
--- literalParser IntC = do 
---     val <- integer
---     return (IntLiteral val)
--- literalParser StringC = do 
---     val <- stringLiteral
---     return (StrLiteral val)
 
--- strP = literalParser StringC
-
--- topParser :: Parser Module
--- topParser = commandParser <|> funcParser
-
--- commandParser :: Parser Module 
--- commandParser = do 
---     spaces
---     exp <- exprParser
---     char ';'
---     spaces
---     return $ Command exp
-
-
+precedenceTable = Map.fromList[("Plus",20),("Minus",20),("Mul",40),("Divide",40)]
 
 exprParser :: Parser Expr
-exprParser = literalStmtParser
-           <|> declarationStmtParser
-           <|> funcCallStmtParser
-           <|> (Tok.parens lexer exprParser)
+exprParser = try binOpCallStmtParser
+           <|> try factor
+           <|> try declarationStmtParser
 
--- declStmtParser :: Parser Expr 
--- declStmtParser = do
---     decl <- declParser
---     return $ DeclarationStmt decl
-
--- declParser :: Parser Declaration
--- declParser = externDeclParser <|> varDeclParser
-
--- externDeclParser :: Parser Declaration
--- externDeclParser = do
---     spaces
---     string "extern"
---     name <- nameParser
---     argList <- argListParser
---     ret <- typeParser
---     spaces
---     return $ ExternDecl name argList ret 
-
--- varDeclParser :: Parser Declaration
--- varDeclParser = do 
---     spaces
---     type <- typeParser
---     nameList <- vListParser
---     spaces
---     return $ VarDecl type nameList
-
+factor :: Parser Expr 
+factor = try (paren exprParser)
+        <|> try funcCallStmtParser
+        <|> literalStmtParser
 
 -- | Parsing type related stuffs. ----
 -- NSS
 typeParser :: Parser Type 
-typeParser = intTParser <|> stringTParser
+typeParser = try intTParser <|> stringTParser
 
 -- NSS
 intTParser = do 
     reserved "int"
-    spaces
     return IntC
 
 -- NSS
 stringTParser = do
     reserved "string"
-    spaces
     return StringC
 -------------------------------------
+
+opParser :: Parser Op
+opParser =  try plusParser 
+    <|> try minusParser 
+    <|> try mulParser 
+    <|> divideParser
+
+plusParser = do
+    reservedOp "+"
+    return Plus
+
+minusParser = do
+    reservedOp "-"
+    return Minus
+
+mulParser = do
+    reservedOp "*"
+    return Mul
+
+divideParser = do
+    reservedOp "/"
+    return Divide
 
 -- | Variable Names and identifier -----
 -- NSS
@@ -144,18 +122,28 @@ funcCallStmtParser = do
     res <- funcCallParser 
     return $ FuncCallStmt res
 
-funcCallParser :: Parser FuncCall 
-funcCallParser = callParser {-<|> binOpCall-}
+binOpCallStmtParser :: Parser Expr 
+binOpCallStmtParser = do
+    res <- binOpCallParser
+    return $ BinOpCallStmt res
 
-callParser :: Parser FuncCall
-callParser = do 
+
+funcCallParser :: Parser FuncCall
+funcCallParser = do 
     callee <- nameParser
     (spaces >> (char '(') >> spaces)
     args <- argsParser
     (spaces >> (char ')') >> spaces)
-    return $ Call callee args
+    return $ FuncCall callee args
 
-
+binOpCallParser :: Parser BinOpCall
+binOpCallParser = do 
+    lhs <- factor
+    spaces
+    op <- opParser
+    spaces
+    rhs <- exprParser
+    return $ BinOpCall op lhs rhs
 
 -------------------------------------------------------
 -- | Declaration Stuff
@@ -189,9 +177,6 @@ varDeclParser = do
     return $ VarDecl t names
 
 ---------------------------------------------------------
-
--- funcCallParser :: Parser 
-
 
 mainTest = do
     str <- getLine
