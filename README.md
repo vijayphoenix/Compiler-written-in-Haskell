@@ -10,14 +10,11 @@ On Linux
 
 ### Documentation  
 
-This project is documented under [DOXYGEN](http://www.doxygen.nl/)  Documentation  
+This project is documented under [Haddock](https://www.haskell.org/haddock/#Documentation) Documentation  
 
 ### Authors  
 
-* [**Vijay Tadikamalla**](https://github.com/vijayphoenix)  
-* [**Anjani Kumar**](https://github.com/anjani-1)  
-* [**Anupam Saini**](https://github.com/anupamsaini98)  
-* [**Yogesh Singh**](https://github.com/yo5sh)  
+* [**Vijay Tadikamalla**](https://github.com/vijayphoenix)
 
 #### License  
 
