@@ -78,7 +78,7 @@ data Op
     | Minus
     | Mul 
     | Divide
-    deriving (Show,Eq,Ord)
+    deriving (Show, Ord, Eq)
 
 data Type 
     = IntC 

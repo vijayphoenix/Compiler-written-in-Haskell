@@ -7,6 +7,7 @@ import Control.Monad.Except
 import qualified LLVM.AST as AST
 import Parser
 import Lexer
+import Emit
 
 firstModule :: AST.Module
 firstModule = AST.defaultModule { AST.moduleName = "First Module" }
@@ -21,6 +22,7 @@ eval mod source = do
     Left err -> print err >> return Nothing
     Right ex -> do 
       print ex
+      ast <- codegen mod [ex]
       return $ Just mod
 
 repl :: IO ()
@@ -35,14 +37,7 @@ repl = runInputT defaultSettings (loop firstModule)
         case wrappedMod of 
             Just modn -> loop modn
             Nothing   -> loop mod
-      -- Just input -> do
-      --   let tree = (parse commandParser "Term" input) in 
-      --     loop mod
-        -- case (parse commandParser "sdf" inputCode) of 
-        --   Left mess -> outputStrLn mess
-        --   Right out -> outputStrLn out
-        -- outputStrLn (parse commandParser "sdf" inputCode)
-        -- repl
+
 
 liftError :: ExceptT String IO a -> IO a
 liftError = runExceptT >=> either fail return
