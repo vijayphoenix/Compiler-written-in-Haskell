@@ -10,17 +10,54 @@ import qualified Data.Map as Map
 import AST 
 
 
-precedenceTable = Map.fromList[(Plus,200),(Minus,200),(Mul,400),(Divide,400)]
+
+moduleParser :: Parser Module 
+moduleParser = spaces >> ( try methodParser
+           <|> commandParser )
+
+
+methodParser :: Parser Module
+methodParser = do 
+    res <- funcParser 
+    return $ Method res 
+
+commandParser :: Parser Module 
+commandParser = do
+    res <- exprParser
+    spaces
+    char ';'
+    return $ Command res 
+
+funcParser :: Parser Func 
+funcParser = do 
+    reserved "def"
+    spaces
+    fname <- nameParser
+    (spaces >> (char '(') >> spaces)
+    argList <- argListParser
+    (spaces >> (char ')') >> spaces >> (char ':') >> spaces)
+    retT <- typeParser
+    (spaces >> (char '{') >> spaces)
+    body <- (exprParser `endBy1` (spaces >> (char ';') >> spaces))
+    (spaces >> (char '}') >> spaces)
+    return $ Func fname argList retT body
+
 
 exprParser :: Parser Expr
 exprParser = try binOpCallStmtParser
            <|> try factor
-           <|> try declarationStmtParser
+           <|> declarationStmtParser
+
+variableParser :: Parser Expr
+variableParser = do 
+    res <- nameParser
+    return $ Var res
 
 factor :: Parser Expr 
 factor = try (paren exprParser)
         <|> try funcCallStmtParser
-        <|> literalStmtParser
+        <|> try literalStmtParser
+        <|> variableParser
 
 -- | Parsing type related stuffs. ----
 -- NSS
@@ -88,11 +125,6 @@ argsParser :: Parser Args
 argsParser = exprParser `sepBy1` (spaces >> (char ',') >> spaces)
 -----------------------------------------------
 
--- delim :: Parser ()
--- delim p = (spaces >> (char p) >> spaces)
-
-
-
 ---------------------------------------------------
 -- | LiteralStmt : StrLiteral  | IntLiteral 
 -- NSS
@@ -122,11 +154,6 @@ funcCallStmtParser = do
     res <- funcCallParser 
     return $ FuncCallStmt res
 
-binOpCallStmtParser :: Parser Expr 
-binOpCallStmtParser = do
-    res <- binOpCallParser
-    return $ BinOpCallStmt res
-
 
 funcCallParser :: Parser FuncCall
 funcCallParser = do 
@@ -136,93 +163,39 @@ funcCallParser = do
     (spaces >> (char ')') >> spaces)
     return $ FuncCall callee args
 
--- binOpCallParser :: Parser BinOpCall
--- binOpCallParser = do 
---     lhs <- factor
---     spaces
---     op <- opParser
---     spaces
---     rhs <- exprParser
---     return $ BinOpCall op lhs rhs
-
--- binOpCallParser :: Parser BinOpCall
--- binOpCallParser = do 
---     temp <- factor
---     spaces
---     op <- opParser
---     spaces
---     let tokPrec = (Map.lookup op precedenceTable)
---     lhs <- rest (Just 0) tokPrec temp op
---     rhs <- exprParser
---     return $ BinOpCall op lhs rhs
-
--- rest:: (Maybe Int) -> (Maybe Int) -> Expr -> Op-> Parser Expr
--- rest expPrec tokPrec lhs op = (do
---             if comp tokPrec expPrec 
---                 then return lhs
---                 else do
---                     rhs <- factor
---                     spaces
---                     nextOp <- opParser
---                     spaces
---                     let nextPrec = (Map.lookup nextOp precedenceTable)
---                     if comp tokPrec nextPrec 
---                         then do
---                                 hi <- rest (Just 0) nextPrec rhs nextOp
---                                 let out = BinOpCallStmt (BinOpCall nextOp rhs hi)
---                                 return $BinOpCallStmt (BinOpCall op lhs out)
---                         else do
---                             hii <- return $ BinOpCallStmt (BinOpCall op lhs rhs)
---                             next <- rest (inc tokPrec) nextPrec hii nextOp
---                             return $BinOpCallStmt (BinOpCall nextOp hii next)
---             )
-
+binOpCallStmtParser :: Parser Expr 
+binOpCallStmtParser = do
+    res <- binOpCallParser
+    return $ BinOpCallStmt res
 
 binOpCallParser :: Parser BinOpCall
 binOpCallParser = do 
     temp <- factor
     spaces
-    lhs <- rest (Just 0) temp
-    res <- try (optionalParse lhs) <|> (singleParse lhs)
-    return res
+    lhs <- try (func temp) <|> (return temp)
+    a <- singleParse lhs
+    return a
 
+func :: Expr -> Parser Expr
+func lhs = do
+    res <- rest (Just 0) lhs
+    res' <- try (withLookopParser res) <|> return res
+    return res'
 
-zero :: Expr
-zero = (LiteralStmt (IntLiteral 0))
+withLookopParser :: Expr -> Parser Expr
+withLookopParser res = do
+    op <- lookAhead opParser
+    res' <- func res
+    return res'
 
-optionalParse :: Expr -> Parser BinOpCall
-optionalParse lhs = do
-    op <- opParser 
-    rhs <- exprParser
-    return $ BinOpCall op lhs rhs
 
 singleParse :: Expr -> Parser BinOpCall
-singleParse lhs = return $ BinOpCall Plus lhs zero
+singleParse (BinOpCallStmt a) = return a
+singleParse lhs = return $ BinOpCall Plus lhs (LiteralStmt (IntLiteral 0))
 
--- rest:: (Maybe Int) -> Expr -> Parser Expr
--- rest expPrec lhs= try (do
---         lop <- (lookAhead opParser)
---         let tokPrec = getTokPrec lop
---         if comp tokPrec expPrec 
---             then return lhs
---             else do
---                 op <- opParser
---                 spaces
---                 temp <- factor
---                 spaces
---                 try(do
---                     nop <-(lookAhead opParser)
---                     let nextPrec = getTokPrec nop
---                     if comp tokPrec nextPrec 
---                         then do
---                                 rhs <- rest (inc tokPrec) temp
---                                 return $ BinOpCallStmt (BinOpCall op lhs rhs)
---                         else return $ BinOpCallStmt (BinOpCall op lhs temp)
---                     )<|>return $ BinOpCallStmt (BinOpCall op lhs temp)
---                 ) <|> return lhs
+precedenceTable = Map.fromList[(Plus,10),(Minus,10),(Mul,20),(Divide,20)]
 
 getTokPrec op = (Map.lookup op precedenceTable)
-
 
 rest:: (Maybe Int) -> Expr -> Parser Expr
 rest expPrec lhs= try (do
@@ -240,7 +213,6 @@ rest expPrec lhs= try (do
                 return res
             ) <|> return lhs
 
--- firstP :: (Maybe a) -> 
 firstP tokPrec temp lhs op = do
         nop <-(lookAhead opParser)
         let nextPrec = getTokPrec nop
@@ -287,25 +259,3 @@ varDeclParser = do
     spaces
     names <- vListParser
     return $ VarDecl t names
-
----------------------------------------------------------
-
-mainTest = do
-    str <- getLine
-    if str == "quit"
-    then 
-        return ()
-    else do
-        print (parse exprParser "sdf" str)
-        mainTest
-
-
-
--- --------------Done
--- Type
--- Literal 
--- Name 
--- VList 
--- ArgList
--- Args
--- LiteralStmt

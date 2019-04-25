@@ -9,6 +9,8 @@ module AST (
     Args,
     Declaration(..),
     BinOpCall(..),
+    Func(..),
+    Module(..),
     FuncCall(..)
 ) where 
 
@@ -43,9 +45,15 @@ module AST (
 -- Name : ident
 -- ArgList : Type Name[, ArgList]
 
+-- Func : def Name([ArgList]) : Type { Command-list }
+-- Command-list = Command [Command-list]
+
+-- Command = Expr ;
+
 data Module 
     = Command Expr 
     | Method  Func 
+    deriving (Show)
 
 data Func 
     = Func {
@@ -54,12 +62,14 @@ data Func
         retType:: Type ,
         body   :: [Expr]
     }
+    deriving (Show)
 
 data Expr
     = DeclarationStmt   Declaration
     | FuncCallStmt      FuncCall
     | BinOpCallStmt     BinOpCall
     | LiteralStmt       Literal 
+    | Var               Name
     deriving (Show)
 
 
