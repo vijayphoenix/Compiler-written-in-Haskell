@@ -80,6 +80,7 @@ data Op
     | Minus
     | Mul 
     | Divide
+    | Null
     deriving (Show, Ord, Eq)
 
 data Type 

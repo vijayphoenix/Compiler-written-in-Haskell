@@ -2,9 +2,9 @@ name:                Haskull
 version:             0.1.0.0
 github:              "https://github.com/IITH-SBJoshi/haskell-11"
 license:             BSD3
-author:              "Anjani Kumar"
-maintainer:          "cs17btech11002@iith.ac.in"
-copyright:           "2019 Anjani Kumar"
+author:              "Vijay"
+maintainer:          "cs17btech11040@iith.ac.in"
+copyright:           "2019 Vijay"
 
 extra-source-files:
 - README.md

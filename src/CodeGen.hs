@@ -20,6 +20,7 @@ module CodeGen (
   getvar,
   assign,
   createBlocks,
+  external,
   Codegen(..),
   CodegenState(..),
   BlockState(..),
@@ -83,6 +84,11 @@ define retty label argtys body = addDef $
   , returnType  = retty
   , basicBlocks = body
   }
+
+
+-- | Defines a function here the return type is Type 
+external ::  ASTL.Type -> String -> [(ASTL.Type, ASTL.Name)] -> LLVM ()
+external retty label argtys = define retty label argtys []
 
 addDef :: ASTL.Definition -> LLVM ()
 addDef def = do 

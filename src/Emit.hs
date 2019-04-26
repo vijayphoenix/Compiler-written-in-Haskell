@@ -16,11 +16,10 @@ module Emit (
     varDeclGen,
     literalGen,
     moduleGen,
+    codegenTop',
     call,
     toArgs,
 
-    x',
-    y',
     funcCallGen,
 
 )where 
@@ -46,7 +45,7 @@ import qualified LLVM.AST.Attribute as A
 
 import Control.Monad.State
 import Control.Applicative
-
+import JIT
 -- | Parser ASTL to LLVM code
 
 
@@ -77,16 +76,16 @@ binops = Map.fromList [
 
 -- Arithmetic and Constants
 fadd :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
-fadd a b = instr $ FAdd NoFastMathFlags a b []
+fadd a b = instr $ ASTL.Add False False a b []
 
 fsub :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
-fsub a b = instr $ FSub NoFastMathFlags a b []
+fsub a b = instr $ ASTL.Sub False False a b []
 
 fmul :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
-fmul a b = instr $ FMul NoFastMathFlags a b []
+fmul a b = instr $ ASTL.Mul False False a b []
 
 fdiv :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
-fdiv a b = instr $ FDiv NoFastMathFlags a b []
+fdiv a b = instr $ ASTL.UDiv False a b []
 
 externf :: ASTL.Name -> ASTL.Operand
 externf = ConstantOperand . C.GlobalReference intL
@@ -101,42 +100,50 @@ toArgs :: [ASTL.Operand] -> [(ASTL.Operand, [A.ParameterAttribute])]
 toArgs = map (\x -> (x, []))
 
 
+liftError :: ExceptT String IO a -> IO a
+liftError = runExceptT >=> either fail return
 
 
-y' :: Traversable t => t Func -> LLVM (t ())
-y' fns = mapM codegenTop fns
-
-x' :: ASTL.Module -> LLVM a -> ASTL.Module
-x' mod modn = runLLVM mod modn
-
+-- | Actions associated with each branch of ASTL
+-- | Used to refer to a variable
 
 
 -- withContext == Create a Context, run an action (to which it is provided), then destroy the Context.
+-- codegen :: ASTL.Module -> [ASTp.Func] -> IO ASTL.Module
+-- codegen mod fns = withContext $ \context -> -- fns  = [(Function "foo " ["a", "b"] (Float 1.0)) ]
+--   liftError $ withModuleFromAST context newast $ \m -> do
+--     llstr <- moduleLLVMAssembly m
+--     putStrLn llstr
+--     return newast
+--   where
+--     modn    = mapM codegenTop fns  -- list of LLVM ()
+--     newast  = runLLVM mod modn  
+
 codegen :: ASTL.Module -> [ASTp.Func] -> IO ASTL.Module
-codegen mod fns = withContext $ \context -> -- fns  = [(Function "foo " ["a", "b"] (Float 1.0)) ]
+codegen mod fns = do
+  res <- runJIT oldast
+  case res  of
+    Right newast -> return newast
+    Left err     -> putStrLn err >> return oldast
+  where
+    modn    = mapM codegenTop fns
+    oldast  = runLLVM mod modn
+
+codegen' :: ASTL.Module -> [ASTp.Declaration] -> IO ASTL.Module
+codegen' mod decl = withContext $ \context ->
   liftError $ withModuleFromAST context newast $ \m -> do
     llstr <- moduleLLVMAssembly m
     putStrLn llstr
     return newast
   where
-    modn    = mapM codegenTop fns  -- list of LLVM ()
+    modn    = mapM codegenTop' decl  -- list of LLVM ()
     newast  = runLLVM mod modn  
 
 
-
-
-
-
-liftError :: ExceptT String IO a -> IO a
-liftError = runExceptT >=> either fail return
-
-
-
--- funcGen :: ASTp.Func -> LLVM ()
--- funcGen x = addDef $ getDef x
-
--- declarationGen :: ASTp.Declaration -> LLVM ()
--- declarationGen c@(ASTp.ExternDecl _ _ _) = addDef $ getExtern c
+codegenTop' :: ASTp.Declaration -> LLVM ()
+codegenTop' (ASTp.ExternDecl name fnargs retT) = do
+  external intL name args
+  where args = getArgList fnargs
 
 
 
@@ -146,6 +153,9 @@ liftError = runExceptT >=> either fail return
 
 -- | Parser Module to LLVM Module
 moduleGen :: ASTL.Module -> ASTp.Module -> IO ASTL.Module
+moduleGen modL (ASTp.Command (DeclarationStmt c@(ExternDecl _ _ _))) =
+  codegen' modL [c]
+
 moduleGen modL (ASTp.Method func) = codegen modL [func]
 moduleGen modL (ASTp.Command expr) = codegen modL [rest] 
     where rest = ASTp.Func {

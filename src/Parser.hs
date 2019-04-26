@@ -1,6 +1,5 @@
 module Parser (
     moduleParser,
-    z',
     funcParser
 )where 
 
@@ -12,9 +11,6 @@ import Text.Parsec
 import qualified Text.Parsec.Token as Tok
 import qualified Data.Map as Map 
 import AST 
-
-z' = [Func {fname = "x", argList = [(IntC,"p")], retType = IntC, body = [ DeclarationStmt (VarDecl {vType = IntC, vName = ["y"]}) ]}]
-
 
 moduleParser :: Parser Module 
 moduleParser = spaces >> ( try methodParser
@@ -49,8 +45,7 @@ funcParser = do
 
 
 exprParser :: Parser Expr
-exprParser = try binOpCallStmtParser
-           <|> try factor
+exprParser = try primary
            <|> declarationStmtParser
 
 variableParser :: Parser Expr
@@ -168,10 +163,23 @@ funcCallParser = do
     (spaces >> (char ')') >> spaces)
     return $ FuncCall callee args
 
+
 binOpCallStmtParser :: Parser Expr 
 binOpCallStmtParser = do
     res <- binOpCallParser
     return $ BinOpCallStmt res
+
+primary :: Parser Expr 
+primary = do
+    res <- factor
+    spaces 
+    lop <- try (lookAhead opParser) <|> return Null
+    if lop == Null 
+        then return res
+    else do 
+        lhs <- try (func res) <|> (return res)
+        return lhs
+
 
 binOpCallParser :: Parser BinOpCall
 binOpCallParser = do 
