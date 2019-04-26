@@ -85,7 +85,8 @@ opParser :: Parser Op
 opParser =  try plusParser 
     <|> try minusParser 
     <|> try mulParser 
-    <|> divideParser
+    <|> try divideParser
+    <|> lessthanParser
 
 plusParser = do
     reservedOp "+"
@@ -102,6 +103,10 @@ mulParser = do
 divideParser = do
     reservedOp "/"
     return Divide
+
+lessthanParser = do
+    reservedOp "<"
+    return LessThan
 
 -- | Variable Names and identifier -----
 -- NSS
@@ -212,7 +217,7 @@ singleParse :: Expr -> Parser BinOpCall
 singleParse (BinOpCallStmt a) = return a
 singleParse lhs = return $ BinOpCall Plus lhs (LiteralStmt (IntLiteral 0))
 
-precedenceTable = Map.fromList[(Plus,10),(Minus,10),(Mul,20),(Divide,20)]
+precedenceTable = Map.fromList[(Plus,10),(Minus,10),(Mul,20),(Divide,20),(LessThan,5)]
 
 getTokPrec op = (Map.lookup op precedenceTable)
 

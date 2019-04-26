@@ -41,8 +41,7 @@ module CodeGen (
   br,
   phi,
   cbr,
-  fcmp,
-  uitofp
+  fcmp
   
 )where 
 
@@ -321,6 +320,3 @@ phi ty incoming = instr $ ASTL.Phi ty incoming []
 
 fcmp :: IP.IntegerPredicate -> ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
 fcmp cond a b = instr $ ICmp cond a b []
-
-uitofp :: ASTL.Type -> ASTL.Operand -> Codegen ASTL.Operand
-uitofp ty a = instr $ ASTL.UIToFP a ty []

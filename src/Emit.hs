@@ -90,9 +90,7 @@ fdiv :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
 fdiv a b = instr $ ASTL.UDiv False a b []
 
 lesser :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
-lesser a b = do
-  test <- fcmp IP.ULT a b
-  uitofp intL test
+lesser a b = fcmp IP.ULT a b
 
 externf :: ASTL.Name -> ASTL.Operand
 externf = ConstantOperand . C.GlobalReference intL
