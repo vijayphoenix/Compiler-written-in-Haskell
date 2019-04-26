@@ -195,8 +195,8 @@ setBlock bname = do
 
 
 
--- Alloca Returns an instruction of declaration of 
--- a var of allocatedType :: Type , numElements , alignment , metadata 
+-- | Alloca Returns an instruction of declaration of 
+-- | A var of allocatedType :: Type , numElements , alignment , metadata 
 alloca :: ASTL.Type -> Codegen ASTL.Operand
 alloca ty = instr $ ASTL.Alloca ty Nothing 0 [] 
 

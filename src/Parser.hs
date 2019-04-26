@@ -264,3 +264,20 @@ varDeclParser = do
     spaces
     names <- vListParser
     return $ VarDecl t names
+
+
+ifthenParser :: Parser Ifthen
+ifthenParser = do
+    reserved "if"
+    (spaces >> (char '(') >> spaces)
+    cond <- exprParser
+    (spaces >> (char ')') >> spaces)
+    reserved "then"
+    (spaces >> (char '{') >> spaces)
+    tr <- exprParser
+    (spaces >> (char '}') >> spaces)
+    reserved "else"
+    (spaces >> (char '{') >> spaces)
+    fl <- exprParser
+    (spaces >> (char '}') >> spaces)
+    return $ Ifthen cond tr fl

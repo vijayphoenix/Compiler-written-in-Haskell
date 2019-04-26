@@ -23,7 +23,7 @@ eval mod source = do
     Right ex -> do 
       print ex
       ast <- moduleGen mod ex
-      return $ Just mod
+      return $ Just ast
 
 repl :: IO ()
 repl = runInputT defaultSettings (loop firstModule)

@@ -11,7 +11,8 @@ module AST (
     BinOpCall(..),
     Func(..),
     Module(..),
-    FuncCall(..)
+    FuncCall(..),
+    Ifthen(..)
 ) where 
 
 -- | Syntax rules : 
@@ -51,8 +52,8 @@ module AST (
 -- Command = Expr ;
 
 data Module 
-    = Command Expr 
-    | Method  Func 
+    = Command Expr  -- Done
+    | Method  Func  -- Done
     deriving (Show)
 
 data Func 
@@ -66,10 +67,11 @@ data Func
 
 data Expr
     = DeclarationStmt   Declaration -- Left
-    | FuncCallStmt      FuncCall 
-    | BinOpCallStmt     BinOpCall
-    | LiteralStmt       Literal 
-    | Var               Name
+    | FuncCallStmt      FuncCall    -- Done
+    | BinOpCallStmt     BinOpCall   -- Done 
+    | LiteralStmt       Literal     -- Done
+    | Var               Name        -- Done
+    | IfthenStmt        Ifthen      -- Left
     deriving (Show)
 
 
@@ -86,7 +88,7 @@ data Type
     deriving (Show)
 
 data Literal 
-    = StrLiteral String
+    = StrLiteral String -- Done
     | IntLiteral Integer
     deriving (Show)
 
@@ -95,6 +97,12 @@ type Name = String
 type VList = [Name]
 type ArgList = [(Type, Name)]
 type Args = [Expr]
+
+data Ifthen = Ifthen {
+    cond :: Expr,
+    trueCond :: Expr,
+    falseCond :: Expr
+} deriving (Show)
 
 
 data Declaration
@@ -110,14 +118,14 @@ data Declaration
     deriving (Show)
 
 
-data FuncCall
+data FuncCall -- Done
     = FuncCall {
         callee :: Name ,
         args   :: Args
     }
     deriving (Show)
 
-data BinOpCall 
+data BinOpCall  -- Done
     = BinOpCall {
         op     :: Op ,
         lhs    :: Expr,
