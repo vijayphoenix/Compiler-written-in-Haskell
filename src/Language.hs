@@ -29,6 +29,6 @@ haskullstyle = emptyDef {
 -- | The language definition for the Haskull language.
 haskulldef = haskullstyle { 
     reservedOpNames   = ["+", "/", "-", "*", ";", "="], 
-    reservedNames     = ["int", "char", "def", "extern", "string"]
+    reservedNames     = ["int", "char", "def", "extern", "string","if","then","else"]
 }
     

@@ -1,0 +1,90 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 9784ac16383405c1422a91f9d4c724b0cf3398b5f60803f52487b358aecf82ed
+
+name:           Haskull
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/IITH-SBJoshi/haskell-11#readme>
+homepage:       https://github.com/https://github.com/IITH-SBJoshi/haskell-11#readme
+bug-reports:    https://github.com/https://github.com/IITH-SBJoshi/haskell-11/issues
+author:         Anjani Kumar
+maintainer:     cs17btech11002@iith.ac.in
+copyright:      2019 Anjani Kumar
+license:        BSD3
+build-type:     Simple
+extra-source-files:
+    README.md
+    ChangeLog.md
+
+source-repository head
+  type: git
+  location: https://github.com/https://github.com/IITH-SBJoshi/haskell-11
+
+library
+  exposed-modules:
+      AST
+      CodeGen
+      Emit
+      Language
+      Lexer
+      Parser
+  other-modules:
+      Paths_Haskull
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , bytestring >=0.10
+    , containers >=0.4
+    , haskeline >=0.7.1.2
+    , llvm-hs >=4.0.0.0
+    , llvm-hs-pure >=4.0.0.0
+    , mtl >=2.1.3
+    , parsec >=3.1
+    , transformers >=0.3.0.0 && <0.6
+  default-language: Haskell2010
+
+executable Haskull-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_Haskull
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Haskull
+    , base >=4.7 && <5
+    , bytestring >=0.10
+    , containers >=0.4
+    , haskeline >=0.7.1.2
+    , llvm-hs >=4.0.0.0
+    , llvm-hs-pure >=4.0.0.0
+    , mtl >=2.1.3
+    , parsec >=3.1
+    , transformers >=0.3.0.0 && <0.6
+  default-language: Haskell2010
+
+test-suite Haskull-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_Haskull
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Haskull
+    , base >=4.7 && <5
+    , bytestring >=0.10
+    , containers >=0.4
+    , haskeline >=0.7.1.2
+    , llvm-hs >=4.0.0.0
+    , llvm-hs-pure >=4.0.0.0
+    , mtl >=2.1.3
+    , parsec >=3.1
+    , transformers >=0.3.0.0 && <0.6
+  default-language: Haskell2010

@@ -17,7 +17,7 @@ main = repl
 
 eval :: AST.Module -> String -> IO (Maybe AST.Module)
 eval mod source = do
-  let res  = (parse moduleParser "Term" source)
+  let res  = (parse funcParser "Term" source)
   case res of 
     Left err -> print err >> return Nothing
     Right ex -> do 

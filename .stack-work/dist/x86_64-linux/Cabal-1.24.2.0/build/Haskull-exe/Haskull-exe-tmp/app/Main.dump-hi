@@ -1,0 +1,324 @@
+
+==================== FINAL INTERFACE ====================
+2019-04-25 17:53:07.786596 UTC
+
+interface main@main:Main 8002
+  interface hash: 05351959a6b5eef28a9042e14513d5a7
+  ABI hash: f78c3f687541e5356fb3af268cf9f84b
+  export-list hash: c0c674f23bbbcebef61e5f57467674cf
+  orphan hash: a2163d63f3ae3b497959e90c73312222
+  flag hash: 7a01541eab465e48419c92b55e7ce0dc
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  Main.eval
+  Main.firstModule
+  Main.liftError
+  Main.main
+  Main.repl
+module dependencies:
+package dependencies: Haskull-0.1.0.0@Haskull-0.1.0.0-BWrHz1hBGVfKvAfsCTzyaC
+                      array-0.5.1.1@array-0.5.1.1 base-4.9.1.0
+                      binary-0.8.3.0@binary-0.8.3.0
+                      bytestring-0.10.8.1@bytestring-0.10.8.1
+                      containers-0.5.7.1@containers-0.5.7.1
+                      deepseq-1.4.2.0@deepseq-1.4.2.0 directory-1.3.0.0@directory-1.3.0.0
+                      filepath-1.4.1.1@filepath-1.4.1.1
+                      ghc-boot-th-8.0.2@ghc-boot-th-8.0.2 ghc-prim-0.5.0.0
+                      haskeline-0.7.4.0@haskeline-0.7.4.0-DeCMMzb9PSJC3zwcMXMk7s
+                      integer-gmp-1.0.0.1
+                      llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2
+                      llvm-hs-pure-4.0.0.0@llvm-hs-pure-4.0.0.0-2EKQPzemceCEww6fPxl71c
+                      mtl-2.2.1@mtl-2.2.1-BLKBelFsPB3BoFeSWSOYj6
+                      parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw
+                      pretty-1.1.3.3@pretty-1.1.3.3 template-haskell-2.11.1.0
+                      terminfo-0.4.1.0@terminfo-0.4.1.0-FNScbjwxa2Y3p4e5RvG3l
+                      text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR
+                      time-1.6.0.1@time-1.6.0.1 transformers-0.5.2.0@transformers-0.5.2.0
+                      unix-2.7.2.1@unix-2.7.2.1
+                      utf8-string-1.0.1.1@utf8-string-1.0.1.1-1DpjxLeTvGg7ttZZojxJR5
+orphans: base-4.9.1.0:GHC.Base base-4.9.1.0:GHC.Float
+         binary-0.8.3.0@binary-0.8.3.0:Data.Binary.Generic
+         bytestring-0.10.8.1@bytestring-0.10.8.1:Data.ByteString.Builder
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:Control.Monad.AnyCont
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Atomicity
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Attribute
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.CallingConvention
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Constant
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.EncodeAST
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.FFI.LLVMCTypes
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.FastMathFlags
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.FloatingPointPredicate
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Global
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.InlineAssembly
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Instruction
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.IntegerPredicate
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.MemoryBuffer
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Metadata
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Module
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Operand
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.RMWOperation
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.String
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.TailCallKind
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Target
+         llvm-hs-4.0.1.0@llvm-hs-4.0.1.0-7zNtSbHzHexJcgnwmG0bn2:LLVM.Internal.Type
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Show
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Calendar.Gregorian
+         time-1.6.0.1@time-1.6.0.1:Data.Time.Format.Parse
+         time-1.6.0.1@time-1.6.0.1:Data.Time.LocalTime.LocalTime
+         transformers-0.5.2.0@transformers-0.5.2.0:Control.Monad.Trans.Error
+family instance modules: base-4.9.1.0:Control.Applicative
+                         base-4.9.1.0:Data.Complex base-4.9.1.0:Data.Either
+                         base-4.9.1.0:Data.Functor.Const base-4.9.1.0:Data.Functor.Identity
+                         base-4.9.1.0:Data.List.NonEmpty base-4.9.1.0:Data.Monoid
+                         base-4.9.1.0:Data.Semigroup base-4.9.1.0:Data.Type.Equality
+                         base-4.9.1.0:Data.Version base-4.9.1.0:Data.Void
+                         base-4.9.1.0:GHC.Exts base-4.9.1.0:GHC.Generics
+                         base-4.9.1.0:GHC.IO.Exception base-4.9.1.0:GHC.TypeLits
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntMap.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntSet.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Map.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Sequence
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Set.Base
+                         ghc-boot-th-8.0.2@ghc-boot-th-8.0.2:GHC.LanguageExtensions.Type
+                         pretty-1.1.3.3@pretty-1.1.3.3:Text.PrettyPrint.Annotated.HughesPJ
+                         pretty-1.1.3.3@pretty-1.1.3.3:Text.PrettyPrint.HughesPJ
+                         template-haskell-2.11.1.0:Language.Haskell.TH.Syntax
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+import  -/  Haskull-0.1.0.0@Haskull-0.1.0.0-BWrHz1hBGVfKvAfsCTzyaC:Emit 2453edc61972e350596669442d7d430f
+import  -/  Haskull-0.1.0.0@Haskull-0.1.0.0-BWrHz1hBGVfKvAfsCTzyaC:Lexer 3b997eb5d2325791aebb8056ea2aec6f
+import  -/  Haskull-0.1.0.0@Haskull-0.1.0.0-BWrHz1hBGVfKvAfsCTzyaC:Parser 245b026dbe3b1e47e091060c6fe4a9a8
+import  -/  base-4.9.1.0:Control.Monad a6784c5dab0d75c63dabec5a37843f98
+import  -/  base-4.9.1.0:Control.Monad.IO.Class 1a4384f66ee999caf5366398edb6ca7b
+import  -/  base-4.9.1.0:Data.Either 20b09ef8d0a5b74fdec011c40c1587f5
+import  -/  base-4.9.1.0:GHC.Base c4231c43c07e46080a26bf94094c7aa1
+import  -/  base-4.9.1.0:Prelude 22dd289b8469a8fa8dc81cab7b237771
+import  -/  base-4.9.1.0:System.IO e4a64a8e3dce8616da54f0ee7104f7db
+import  -/  ghc-prim-0.5.0.0:GHC.Types 89f8de4f08018c9177c98d979eae0e45
+import  -/  haskeline-0.7.4.0@haskeline-0.7.4.0-DeCMMzb9PSJC3zwcMXMk7s:System.Console.Haskeline fe0b32bd1a1a58850991e54eb2248e2d
+import  -/  haskeline-0.7.4.0@haskeline-0.7.4.0-DeCMMzb9PSJC3zwcMXMk7s:System.Console.Haskeline.InputT e12d01ef78b22359b4e5d5416b417802
+import  -/  llvm-hs-pure-4.0.0.0@llvm-hs-pure-4.0.0.0-2EKQPzemceCEww6fPxl71c:LLVM.AST 47038b0f748769b63f8076369b1a33fb
+import  -/  mtl-2.2.1@mtl-2.2.1-BLKBelFsPB3BoFeSWSOYj6:Control.Monad.Except 3bb0e2598193c1ba00c9723945e93004
+import  -/  parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw:Text.Parsec.Prim cf8fdd65b268b07ee0d4808d85010d49
+import  -/  transformers-0.5.2.0@transformers-0.5.2.0:Control.Monad.Trans.Except cf549ed58fbe6804d519833d92803f4c
+74d41fa97bb12ed61e686b3cfcbda8b6
+  $sdefaultSettings ::
+    System.Console.Haskeline.InputT.Settings GHC.Types.IO
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, False)
+                (System.Console.Haskeline.InputT.Settings
+                   @ GHC.Types.IO
+                   (System.Console.Haskeline.Completion.completeFilename
+                      @ GHC.Types.IO
+                      Control.Monad.IO.Class.$fMonadIOIO)
+                   (GHC.Base.Nothing @ GHC.IO.FilePath)
+                   GHC.Types.True) -}
+d6831ef04cb9301b090dfae6f7bb7ec7
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module Main.$trModule2 Main.$trModule1) -}
+847d9fc3b8e6f0b424199f36b4999bb2
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "Main"#) -}
+24ef6042833e75ffd7aa98b83ecca98d
+  $trModule2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "main"#) -}
+6ab6d8e4c879973a0ecc352adacdfb9e
+  eval ::
+    LLVM.AST.Module
+    -> GHC.Base.String -> GHC.Types.IO (GHC.Base.Maybe LLVM.AST.Module)
+  {- Arity: 3, Strictness: <L,U><L,U><S,U>,
+     Unfolding: InlineRule (0, True, True)
+                Main.eval1
+                  `cast`
+                (<LLVM.AST.Module>_R
+                 ->_R <GHC.Base.String>_R
+                 ->_R Sym (GHC.Types.N:IO[0] <GHC.Base.Maybe LLVM.AST.Module>_R)) -}
+4ba264d7afe6b4d3fb3d980779e8d0cb
+  eval1 ::
+    LLVM.AST.Module
+    -> GHC.Base.String
+    -> GHC.Prim.State# GHC.Prim.RealWorld
+    -> (# GHC.Prim.State# GHC.Prim.RealWorld,
+          GHC.Base.Maybe LLVM.AST.Module #)
+  {- Arity: 3, Strictness: <L,U><L,U><S,U>,
+     Unfolding: (\ (mod :: LLVM.AST.Module)
+                   (source :: GHC.Base.String)
+                   (eta :: GHC.Prim.State# GHC.Prim.RealWorld)[OneShot] ->
+                 case (Text.Parsec.Prim.runPT
+                         @ GHC.Base.String
+                         @ Data.Functor.Identity.Identity
+                         @ GHC.Types.Char
+                         @ ()
+                         @ AST.Func
+                         (LLVM.Internal.Target.$fDecodeMdMapes_$s$fStream[]mtok
+                            @ GHC.Types.Char)
+                         Parser.funcParser1
+                           `cast`
+                         (Sym (Text.Parsec.Prim.N:ParsecT[0]
+                                   <[GHC.Types.Char]>_R
+                                   <()>_R
+                                   <Data.Functor.Identity.Identity>_R
+                                   <AST.Func>_R))
+                         GHC.Tuple.()
+                         Main.eval2
+                         source)
+                        `cast`
+                      (Data.Functor.Identity.N:Identity[0]
+                           <Data.Either.Either
+                              Text.Parsec.Error.ParseError AST.Func>_R) of wild {
+                   Data.Either.Left err
+                   -> case GHC.IO.Handle.Text.hPutStr2
+                             GHC.IO.Handle.FD.stdout
+                             (Text.Parsec.Error.$fShowParseError_$cshow err)
+                             GHC.Types.True
+                             eta of ds1 { (#,#) ipv ipv1 ->
+                      (# ipv, GHC.Base.Nothing @ LLVM.AST.Module #) }
+                   Data.Either.Right ex
+                   -> case GHC.IO.Handle.Text.hPutStr2
+                             GHC.IO.Handle.FD.stdout
+                             (AST.$fShowFunc_$cshow ex)
+                             GHC.Types.True
+                             eta of ds1 { (#,#) ipv ipv1 ->
+                      case (Emit.codegen
+                              mod
+                              (GHC.Types.: @ AST.Func ex (GHC.Types.[] @ AST.Func)))
+                             `cast`
+                           (GHC.Types.N:IO[0] <LLVM.AST.Module>_R)
+                             ipv of ds2 { (#,#) ipv2 ipv3 ->
+                      (# ipv2, GHC.Base.Just @ LLVM.AST.Module mod #) } } }) -}
+f6fcc7de77bf443e30b3dacfcd43bc36
+  eval2 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "Term"#) -}
+de8eabaa5f12805604bf2481377cd265
+  firstModule :: LLVM.AST.Module
+  {- Strictness: m,
+     Unfolding: (LLVM.AST.Module
+                   Main.firstModule1
+                   LLVM.AST.defaultModule1
+                   (GHC.Base.Nothing @ LLVM.AST.DataLayout.DataLayout)
+                   (GHC.Base.Nothing @ GHC.Base.String)
+                   (GHC.Types.[] @ LLVM.AST.Definition)) -}
+bf727e59071e4e20fce6c8c5144b3036
+  firstModule1 :: [GHC.Types.Char]
+  {- Unfolding: (GHC.CString.unpackCString# "First Module"#) -}
+ceb685251ed05223f53177baafa3d80d
+  liftError ::
+    Control.Monad.Trans.Except.ExceptT GHC.Base.String GHC.Types.IO a
+    -> GHC.Types.IO a
+  {- Arity: 2, Strictness: <C(S(SS)),1*C1(U(U,1*U))><S,U>,
+     Unfolding: InlineRule (0, True, True)
+                Main.liftError1
+                  `cast`
+                (forall (a :: <*>_N).
+                 <Control.Monad.Trans.Except.ExceptT
+                    GHC.Base.String GHC.Types.IO a>_R
+                 ->_R Sym (GHC.Types.N:IO[0] <a>_R)) -}
+9e8720c348607502400a03b45791a560
+  liftError1 ::
+    Control.Monad.Trans.Except.ExceptT GHC.Base.String GHC.Types.IO a
+    -> GHC.Prim.State# GHC.Prim.RealWorld
+    -> (# GHC.Prim.State# GHC.Prim.RealWorld, a #)
+  {- Arity: 2, Strictness: <C(S(SS)),1*C1(U(U,1*U))><S,U>,
+     Unfolding: InlineRule (2, True, False)
+                (\ @ a
+                   (x :: Control.Monad.Trans.Except.ExceptT
+                           GHC.Base.String GHC.Types.IO a)
+                   (s :: GHC.Prim.State# GHC.Prim.RealWorld)[OneShot] ->
+                 case x `cast`
+                      (Trans
+                           (Control.Monad.Trans.Except.N:ExceptT[0]
+                                <GHC.Base.String>_N <GHC.Types.IO>_R <a>_N)
+                           (GHC.Types.N:IO[0] <Data.Either.Either GHC.Base.String a>_R))
+                        s of ds1 { (#,#) ipv ipv1 ->
+                 case ipv1 of wild {
+                   Data.Either.Left x1 -> GHC.IO.failIO1 @ a x1 ipv
+                   Data.Either.Right y -> (# ipv, y #) } }) -}
+a1e3493c4acb4267e457c552d3f661ce
+  main :: GHC.Types.IO ()
+  {- Unfolding: InlineRule (0, True, True) Main.repl -}
+25e2b80d622bb37f882c48a1d6209348
+  main1 ::
+    GHC.Prim.State# GHC.Prim.RealWorld
+    -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
+  {- Arity: 1,
+     Unfolding: (GHC.TopHandler.runMainIO1 @ () Main.repl) -}
+c8b2d63bd76cf09184151f6ea8ebbce9
+  repl :: GHC.Types.IO ()
+  {- Unfolding: (System.Console.Haskeline.InputT.$wrunInputTBehavior
+                   @ GHC.Types.IO
+                   @ ()
+                   System.Console.Haskeline.MonadException.$fMonadExceptionIO
+                   System.Console.Haskeline.Backend.defaultRunTerm1
+                     `cast`
+                   (Sym (GHC.Types.N:IO[0] <System.Console.Haskeline.Term.RunTerm>_R))
+                   Main.$sdefaultSettings
+                   Main.repl1
+                     `cast`
+                   (Trans
+                        (Sym (Control.Monad.Trans.Reader.N:ReaderT[0]
+                                  <*>_N
+                                  <System.Console.Haskeline.Term.RunTerm>_R
+                                  <Control.Monad.Trans.Reader.ReaderT
+                                     (GHC.IORef.IORef System.Console.Haskeline.History.History)
+                                     (Control.Monad.Trans.Reader.ReaderT
+                                        (GHC.IORef.IORef
+                                           System.Console.Haskeline.Command.KillRing.KillRing)
+                                        (Control.Monad.Trans.Reader.ReaderT
+                                           System.Console.Haskeline.Prefs.Prefs
+                                           (Control.Monad.Trans.Reader.ReaderT
+                                              (System.Console.Haskeline.InputT.Settings
+                                                 GHC.Types.IO)
+                                              GHC.Types.IO)))>_R
+                                  <()>_N))
+                        (Sym (System.Console.Haskeline.InputT.N:InputT[0]
+                                  <GHC.Types.IO>_R) <()>_N))) -}
+4539257730f2047f90288c3fd4db6385
+  repl1 ::
+    System.Console.Haskeline.Term.RunTerm
+    -> Control.Monad.Trans.Reader.ReaderT
+         (GHC.IORef.IORef System.Console.Haskeline.History.History)
+         (Control.Monad.Trans.Reader.ReaderT
+            (GHC.IORef.IORef
+               System.Console.Haskeline.Command.KillRing.KillRing)
+            (Control.Monad.Trans.Reader.ReaderT
+               System.Console.Haskeline.Prefs.Prefs
+               (Control.Monad.Trans.Reader.ReaderT
+                  (System.Console.Haskeline.InputT.Settings GHC.Types.IO)
+                  GHC.Types.IO)))
+         ()
+  {- Arity: 1, Unfolding: (Main.repl2 Main.firstModule) -}
+103239fec28ba1a5ab2a1247b917d54b
+  repl2 ::
+    LLVM.AST.Module
+    -> System.Console.Haskeline.Term.RunTerm
+    -> Control.Monad.Trans.Reader.ReaderT
+         (GHC.IORef.IORef System.Console.Haskeline.History.History)
+         (Control.Monad.Trans.Reader.ReaderT
+            (GHC.IORef.IORef
+               System.Console.Haskeline.Command.KillRing.KillRing)
+            (Control.Monad.Trans.Reader.ReaderT
+               System.Console.Haskeline.Prefs.Prefs
+               (Control.Monad.Trans.Reader.ReaderT
+                  (System.Console.Haskeline.InputT.Settings GHC.Types.IO)
+                  GHC.Types.IO)))
+         ()
+  {- Arity: 2, Strictness: <L,U><L,U> -}
+"SPEC/Main defaultSettings @ IO" [ALWAYS] forall ($dMonadIO :: Control.Monad.IO.Class.MonadIO
+                                                                 GHC.Types.IO)
+  System.Console.Haskeline.defaultSettings @ GHC.Types.IO $dMonadIO
+  = Main.$sdefaultSettings
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: none
+require own pkg trusted: False
+

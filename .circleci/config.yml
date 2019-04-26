@@ -1,6 +1,6 @@
 version: 2.0
 jobs:
-  build_gcc_latest:
+  build:
     docker:
       - image: fpco/stack-build:lts
     steps:
@@ -13,8 +13,5 @@ jobs:
             sudo apt-get install -y haskell-platform
             wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
             alias llvm-config="llvm-config-4.0"
-            wget -qO- https://get.haskellstack.org/ | sh
+            sudo apt-get -y install llvm-4.0 llvm-4.0-dev
             stack build
-
-
-# git submodule sync; git submodule update --init # initialize git submodules

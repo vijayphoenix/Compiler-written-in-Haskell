@@ -1,0 +1,188 @@
+
+==================== FINAL INTERFACE ====================
+2019-04-25 17:53:03.202114 UTC
+
+interface Haskull-0.1.0.0-BWrHz1hBGVfKvAfsCTzyaC:Lexer 8002
+  interface hash: fd7301e905427cf4b2bfd7a4ce147201
+  ABI hash: 3b997eb5d2325791aebb8056ea2aec6f
+  export-list hash: 3401fb34fd8a868f364dc8f09f4ea2af
+  orphan hash: 171e371a3ee1e9c17696152cd6f335be
+  flag hash: ab396f11155bd696ab63895436e6f1df
+  sig of: Nothing
+  used TH splices: False
+  where
+exports:
+  Lexer.ident
+  Lexer.integer
+  Lexer.lexer
+  Lexer.paren
+  Lexer.reserved
+  Lexer.reservedOp
+  Lexer.stringLiteral
+  Text.Parsec.Prim.parse
+  Text.Parsec.String.Parser
+module dependencies: Language
+package dependencies: array-0.5.1.1@array-0.5.1.1 base-4.9.1.0*
+                      binary-0.8.3.0@binary-0.8.3.0
+                      bytestring-0.10.8.1@bytestring-0.10.8.1
+                      containers-0.5.7.1@containers-0.5.7.1
+                      deepseq-1.4.2.0@deepseq-1.4.2.0 ghc-prim-0.5.0.0
+                      integer-gmp-1.0.0.1 mtl-2.2.1@mtl-2.2.1-BLKBelFsPB3BoFeSWSOYj6
+                      parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw
+                      text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR
+                      transformers-0.5.2.0@transformers-0.5.2.0
+orphans: base-4.9.1.0:GHC.Base base-4.9.1.0:GHC.Float
+         binary-0.8.3.0@binary-0.8.3.0:Data.Binary.Generic
+         bytestring-0.10.8.1@bytestring-0.10.8.1:Data.ByteString.Builder
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Show
+         transformers-0.5.2.0@transformers-0.5.2.0:Control.Monad.Trans.Error
+family instance modules: base-4.9.1.0:Control.Applicative
+                         base-4.9.1.0:Data.Complex base-4.9.1.0:Data.Either
+                         base-4.9.1.0:Data.Functor.Const base-4.9.1.0:Data.Functor.Identity
+                         base-4.9.1.0:Data.List.NonEmpty base-4.9.1.0:Data.Monoid
+                         base-4.9.1.0:Data.Semigroup base-4.9.1.0:Data.Type.Equality
+                         base-4.9.1.0:Data.Version base-4.9.1.0:Data.Void
+                         base-4.9.1.0:GHC.Exts base-4.9.1.0:GHC.Generics
+                         base-4.9.1.0:GHC.IO.Exception base-4.9.1.0:GHC.TypeLits
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntMap.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.IntSet.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Map.Base
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Sequence
+                         containers-0.5.7.1@containers-0.5.7.1:Data.Set.Base
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text
+                         text-1.2.2.1@text-1.2.2.1-Ji7hMs2U4BkBwavd4taEVR:Data.Text.Lazy
+import  -/  Language d5580d8965d96755e7f99c06e55463f6
+  exports: 89a957bf29fae31d2d1d3db697110512
+  haskulldef 1a0e913c5c97a7a1b9321e1587440c13
+import  -/  base-4.9.1.0:GHC.Base c4231c43c07e46080a26bf94094c7aa1
+import  -/  base-4.9.1.0:Prelude 22dd289b8469a8fa8dc81cab7b237771
+import  -/  integer-gmp-1.0.0.1:GHC.Integer.Type 318df275d77dcdb18e0006d8d7870c2a
+import  -/  parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw:Text.Parsec b63ffbcfd32da83683c00215f9c65dae
+import  -/  parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw:Text.Parsec.Prim cf8fdd65b268b07ee0d4808d85010d49
+import  -/  parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw:Text.Parsec.String 82047932fe8b05f9590326d15e87580c
+import  -/  parsec-3.1.11@parsec-3.1.11-113irVHGgd88sRnywByDNw:Text.Parsec.Token 43a3c35cde41b2eb307e1fa0e52feb99
+66534299e812f0535f9eaeabca6b1990
+  $s$fStream[]mtok ::
+    Text.Parsec.Prim.Stream [tok] Data.Functor.Identity.Identity tok
+  {- Strictness: m, Inline: [ALWAYS] CONLIKE,
+     Unfolding: DFun: @ tok.
+                  @ [tok]
+                  @ Data.Functor.Identity.Identity
+                  @ tok
+                  (Lexer.$s$fStream[]mtok_$s$fStream[]mtok_$cp1Stream @ tok)
+                  (Lexer.$s$fStream[]mtok_$s$fStream[]mtok_$cuncons @ tok) -}
+d78ae26c14b6639b7e4d56a41f590a38
+  $s$fStream[]mtok_$s$fStream[]mtok_$cp1Stream ::
+    GHC.Base.Monad Data.Functor.Identity.Identity
+  {- Strictness: m,
+     Unfolding: InlineRule (0, True, True)
+                (\ @ tok -> Data.Functor.Identity.$fMonadIdentity) -}
+dbe72a5da2326be6aa05dccb6325c4d9
+  $s$fStream[]mtok_$s$fStream[]mtok_$cuncons ::
+    [tok]
+    -> Data.Functor.Identity.Identity (GHC.Base.Maybe (tok, [tok]))
+  {- Arity: 1, HasNoCafRefs, Strictness: <S,1*U>,
+     Inline: INLINE (sat-args=1),
+     Unfolding: InlineRule (1, False, False)
+                (\ @ tok (ds :: [tok]) ->
+                 case ds of wild {
+                   []
+                   -> GHC.Base.$
+                        @ 'GHC.Types.PtrRepLifted
+                        @ (GHC.Base.Maybe (tok, [tok]))
+                        @ (Data.Functor.Identity.Identity (GHC.Base.Maybe (tok, [tok])))
+                        (Data.Functor.Identity.$fApplicativeIdentity_$cpure
+                           @ (GHC.Base.Maybe (tok, [tok])))
+                        (GHC.Base.Nothing @ (tok, [tok]))
+                   : t ts
+                   -> GHC.Base.$
+                        @ 'GHC.Types.PtrRepLifted
+                        @ (GHC.Base.Maybe (tok, [tok]))
+                        @ (Data.Functor.Identity.Identity (GHC.Base.Maybe (tok, [tok])))
+                        (Data.Functor.Identity.$fApplicativeIdentity_$cpure
+                           @ (GHC.Base.Maybe (tok, [tok])))
+                        (GHC.Base.Just @ (tok, [tok]) (t, ts)) }) -}
+01ed268a71dc215caee08baafe9c1556
+  $trModule :: GHC.Types.Module
+  {- HasNoCafRefs, Strictness: m,
+     Unfolding: (GHC.Types.Module Lexer.$trModule2 Lexer.$trModule1) -}
+189c5d01a0d7957d0a21029d15179710
+  $trModule1 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS "Lexer"#) -}
+7364b92cb166b12b69ab9db4179048df
+  $trModule2 :: GHC.Types.TrName
+  {- HasNoCafRefs, Strictness: m1,
+     Unfolding: (GHC.Types.TrNameS
+                   "Haskull-0.1.0.0-BWrHz1hBGVfKvAfsCTzyaC"#) -}
+8f935672dfcd134f69b3dffb9c5209dd
+  ident :: Text.Parsec.String.Parser GHC.Base.String
+  {- Unfolding: (case Lexer.lexer
+                        @ () of wild { Text.Parsec.Token.TokenParser ds1 ds2 ds3 ds4 ds5 ds6 ds7 ds8 ds9 ds10 ds11 ds12 ds13 ds14 ds15 ds16 ds17 ds18 ds19 ds20 ds21 ds22 ds23 ds24 ds25 ds26 ds27 ds28 ds29 ->
+                 ds1 }) -}
+2144573cdee728ff875fab7a7cdd9a1a
+  integer :: Text.Parsec.String.Parser GHC.Integer.Type.Integer
+  {- Unfolding: (case Lexer.lexer
+                        @ () of wild { Text.Parsec.Token.TokenParser ds1 ds2 ds3 ds4 ds5 ds6 ds7 ds8 ds9 ds10 ds11 ds12 ds13 ds14 ds15 ds16 ds17 ds18 ds19 ds20 ds21 ds22 ds23 ds24 ds25 ds26 ds27 ds28 ds29 ->
+                 ds8 }) -}
+7e8826f4512de2b3ff143f7266373ed6
+  lexer :: Text.Parsec.Token.TokenParser st
+  {- Unfolding: (\ @ st ->
+                 Text.Parsec.Token.makeTokenParser
+                   @ GHC.Base.String
+                   @ Data.Functor.Identity.Identity
+                   @ st
+                   (Lexer.$s$fStream[]mtok @ GHC.Types.Char)
+                   (Language.haskulldef @ st)) -}
+3945c52d545a58dc185c88dc2ca06056
+  paren :: Text.Parsec.String.Parser a -> Text.Parsec.String.Parser a
+  {- Unfolding: (\ @ a ->
+                 case Lexer.lexer
+                        @ () of wild { Text.Parsec.Token.TokenParser ds ds1 ds2 ds3 ds4 ds5 ds6 ds7 ds8 ds9 ds10 ds11 ds12 ds13 ds14 ds15 ds16 ds17 ds18 ds19 ds20 ds21 ds22 ds23 ds24 ds25 ds26 ds27 ds28 ->
+                 ds16 @ a }) -}
+c1f33a03b7d67da4ddb0a7b4e879bf19
+  reserved :: GHC.Base.String -> Text.Parsec.String.Parser ()
+  {- Unfolding: (case Lexer.lexer
+                        @ () of wild { Text.Parsec.Token.TokenParser ds1 ds2 ds3 ds4 ds5 ds6 ds7 ds8 ds9 ds10 ds11 ds12 ds13 ds14 ds15 ds16 ds17 ds18 ds19 ds20 ds21 ds22 ds23 ds24 ds25 ds26 ds27 ds28 ds29 ->
+                 ds2 }) -}
+77e188a0b1bdd7522bdbeb84b9203f03
+  reservedOp :: GHC.Base.String -> Text.Parsec.String.Parser ()
+  {- Unfolding: (case Lexer.lexer
+                        @ () of wild { Text.Parsec.Token.TokenParser ds1 ds2 ds3 ds4 ds5 ds6 ds7 ds8 ds9 ds10 ds11 ds12 ds13 ds14 ds15 ds16 ds17 ds18 ds19 ds20 ds21 ds22 ds23 ds24 ds25 ds26 ds27 ds28 ds29 ->
+                 ds4 }) -}
+84fafaebab10e2e656551d1e1fb1eec5
+  stringLiteral :: Text.Parsec.String.Parser GHC.Base.String
+  {- Unfolding: (case Lexer.lexer
+                        @ () of wild { Text.Parsec.Token.TokenParser ds1 ds2 ds3 ds4 ds5 ds6 ds7 ds8 ds9 ds10 ds11 ds12 ds13 ds14 ds15 ds16 ds17 ds18 ds19 ds20 ds21 ds22 ds23 ds24 ds25 ds26 ds27 ds28 ds29 ->
+                 ds6 }) -}
+"SPEC/Lexer $fStream[]mtok @ Identity _" [ALWAYS] forall @ tok
+                                                         ($dMonad :: GHC.Base.Monad
+                                                                       Data.Functor.Identity.Identity)
+  Text.Parsec.Prim.$fStream[]mtok @ Data.Functor.Identity.Identity
+                                  @ tok
+                                  $dMonad
+  = Lexer.$s$fStream[]mtok @ tok
+"SPEC/Lexer $fStream[]mtok_$cp1Stream @ Identity _" [ALWAYS] forall @ tok
+                                                                    ($dMonad :: GHC.Base.Monad
+                                                                                  Data.Functor.Identity.Identity)
+  Text.Parsec.Prim.$fStream[]mtok_$cp1Stream @ Data.Functor.Identity.Identity
+                                             @ tok
+                                             $dMonad
+  = Lexer.$s$fStream[]mtok_$s$fStream[]mtok_$cp1Stream @ tok
+"SPEC/Lexer $fStream[]mtok_$cuncons @ Identity _" [ALWAYS] forall @ tok
+                                                                  ($dMonad :: GHC.Base.Monad
+                                                                                Data.Functor.Identity.Identity)
+  Text.Parsec.Prim.$fStream[]mtok_$cuncons @ Data.Functor.Identity.Identity
+                                           @ tok
+                                           $dMonad
+  = Lexer.$s$fStream[]mtok_$s$fStream[]mtok_$cuncons @ tok
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: safe
+require own pkg trusted: False
+
