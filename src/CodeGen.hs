@@ -28,9 +28,14 @@ module CodeGen (
   alloca,
   execCodegen,
   setBlock,
+  getBlock,
   emptyBlock,
   unikName,
-  entryBlockName
+  entryBlockName,
+  br,
+  phi,
+  cbr,
+  fcmp
 
 )where 
 
@@ -47,6 +52,7 @@ import qualified LLVM.AST as ASTL
 import qualified LLVM.AST.Constant as C
 import qualified LLVM.AST.Float as F
 import qualified LLVM.AST.FloatingPointPredicate as FP
+import qualified LLVM.AST.IntegerPredicate as IP
 
 import Data.Word
 import Data.String
@@ -199,7 +205,8 @@ setBlock bname = do
   modify $ \s -> s { currentBlock = bname }
   return bname
 
-
+getBlock :: Codegen ASTL.Name
+getBlock = gets currentBlock
 
 -- | Alloca Returns an instruction of declaration of 
 -- | A var of allocatedType :: Type , numElements , alignment , metadata 
@@ -289,3 +296,16 @@ store ptr val = instr $ Store False ptr val Nothing 0 []
 
 load :: ASTL.Operand -> Codegen ASTL.Operand
 load ptr = instr $ Load False ptr Nothing 0 []
+
+-- Control Flow
+br :: ASTL.Name -> Codegen (ASTL.Named ASTL.Terminator)
+br val = terminator $ ASTL.Do $ ASTL.Br val []
+
+cbr :: ASTL.Operand -> ASTL.Name -> ASTL.Name -> Codegen (ASTL.Named ASTL.Terminator)
+cbr cond tr fl = terminator $ ASTL.Do $ ASTL.CondBr cond tr fl []
+
+phi :: ASTL.Type -> [(ASTL.Operand, ASTL.Name)] -> Codegen ASTL.Operand
+phi ty incoming = instr $ ASTL.Phi ty incoming []
+
+fcmp :: IP.IntegerPredicate -> ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
+fcmp cond a b = instr $ ICmp cond a b []

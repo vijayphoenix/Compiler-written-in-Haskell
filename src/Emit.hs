@@ -41,7 +41,7 @@ import qualified LLVM.AST.Float as F
 import qualified LLVM.AST.FloatingPointPredicate as FP
 import qualified LLVM.AST.CallingConvention as CC
 import qualified LLVM.AST.Attribute as A
-
+import qualified LLVM.AST.IntegerPredicate as IP
 
 import Control.Monad.State
 import Control.Applicative
@@ -172,6 +172,7 @@ exprGen (FuncCallStmt f) = funcCallGen f
 exprGen (LiteralStmt st) = literalGen st
 exprGen (BinOpCallStmt st) = binOpCallGen st
 exprGen (DeclarationStmt st) = declarationGen st
+exprGen (IfthenStmt st) = ifthenGen st
 
 binOpCallGen :: ASTp.BinOpCall -> Codegen ASTL.Operand
 binOpCallGen (BinOpCall op lhs rhs) = do 
@@ -223,3 +224,34 @@ exprListGen (a:[]) = exprGen a
 exprListGen (x:xs) = do
   exprGen x
   exprListGen xs
+
+ifthenGen :: ASTp.Ifthen -> Codegen ASTL.Operand
+ifthenGen (ASTp.Ifthen cond tr fl) = do
+  ifthen <- addBlock "if.then"
+  ifelse <- addBlock "if.else"
+  ifexit <- addBlock "if.exit"
+  cond <- exprGen cond
+  test <- fcmp IP.NE zero cond
+  cbr test ifthen ifelse      -- Branch based on the condition
+
+  setBlock ifthen
+  trval <- exprGen tr         -- Generate code for the true branch
+  br ifexit                   -- Branch to the merge block
+  ifthen <- getBlock
+
+  setBlock ifelse
+  flval <- exprGen fl         -- Generate code for the false branch
+  br ifexit                   -- Branch to the merge block
+  ifelse <- getBlock
+
+  setBlock ifexit
+  phi intL [(trval, ifthen), (flval, ifelse)]
+
+cons :: C.Constant -> Operand
+cons = ConstantOperand
+
+one = cons $ C.Int 32 1
+zero = cons $ C.Int 32 0
+
+ -- def fib(int x):int { if(x) then {fib(x-1)+fib(x-2)} else {1};}
+  -- def fac(int x):int{ if(x) then { fac(x-1)*x} else {1};}

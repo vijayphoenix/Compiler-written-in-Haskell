@@ -1,6 +1,7 @@
 module Parser (
     moduleParser,
-    funcParser
+    funcParser,
+    ifthenParser
 )where 
 
 import Lexer 
@@ -46,6 +47,7 @@ funcParser = do
 
 exprParser :: Parser Expr
 exprParser = try primary
+           <|> ifthenStmtParser
            <|> declarationStmtParser
 
 variableParser :: Parser Expr
@@ -273,6 +275,10 @@ varDeclParser = do
     names <- vListParser
     return $ VarDecl t names
 
+ifthenStmtParser :: Parser Expr 
+ifthenStmtParser = do
+    res <- ifthenParser
+    return $ IfthenStmt res
 
 ifthenParser :: Parser Ifthen
 ifthenParser = do
