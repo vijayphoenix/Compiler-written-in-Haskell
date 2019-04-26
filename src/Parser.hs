@@ -1,4 +1,8 @@
-module Parser where 
+module Parser (
+    moduleParser,
+    z',
+    funcParser
+)where 
 
 import Lexer 
 import Text.Parsec.String (Parser)
@@ -9,6 +13,7 @@ import qualified Text.Parsec.Token as Tok
 import qualified Data.Map as Map 
 import AST 
 
+z' = [Func {fname = "x", argList = [(IntC,"p")], retType = IntC, body = [ DeclarationStmt (VarDecl {vType = IntC, vName = ["y"]}) ]}]
 
 
 moduleParser :: Parser Module 
@@ -259,20 +264,3 @@ varDeclParser = do
     spaces
     names <- vListParser
     return $ VarDecl t names
-
-
-ifthenParser :: Parser Ifthen
-ifthenParser = do
-    reserved "if"
-    (spaces >> (char '(') >> spaces)
-    cond <- exprParser
-    (spaces >> (char ')') >> spaces)
-    reserved "then"
-    (spaces >> (char '{') >> spaces)
-    tr <- exprParser
-    (spaces >> (char '}') >> spaces)
-    reserved "else"
-    (spaces >> (char '{') >> spaces)
-    fl <- exprParser
-    (spaces >> (char '}') >> spaces)
-    return $ Ifthen cond tr fl

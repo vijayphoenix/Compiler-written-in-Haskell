@@ -1,7 +1,37 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module CodeGen where 
+module CodeGen (
+  LLVM(..),
+  runLLVM,
+  define,
+  addDef,
+  getDef,
+  getType, 
+  getName,
+  intL,
+  getArgList,
+  Names(..),
+  load, 
+  store,
+  local,
+  terminator,
+  ret,
+  getvar,
+  assign,
+  createBlocks,
+  Codegen(..),
+  CodegenState(..),
+  BlockState(..),
+  instr,
+  alloca,
+  execCodegen,
+  setBlock,
+  emptyBlock,
+  unikName,
+  entryBlockName
+
+)where 
 
 
 import LLVM.Module
@@ -12,7 +42,7 @@ import LLVM.AST (Named ((:=)))
 import qualified LLVM.AST.Type as TypeQ
 import qualified LLVM.AST.Global as GLB
 import qualified LLVM.AST.Linkage as Linkage
-import qualified LLVM.AST as AST
+import qualified LLVM.AST as ASTL
 import qualified LLVM.AST.Constant as C
 import qualified LLVM.AST.Float as F
 import qualified LLVM.AST.FloatingPointPredicate as FP
@@ -30,7 +60,7 @@ import Control.Applicative
 
 import LLVM.AST (Instruction(..), FastMathFlags(..))
 
-import qualified AST as ASTp
+import qualified AST as ASTLp
 
 
 
@@ -38,60 +68,58 @@ import qualified AST as ASTp
 -- var = GLB.globalVariableDefaults { name = "Var1", GLB.type' = int }
 
 -- | Utility Functions for Working on Module
-newtype LLVM a = LLVM (State AST.Module a)
-    deriving (Functor, Applicative, Monad, MonadState AST.Module )
+newtype LLVM a = LLVM (State ASTL.Module a)
+    deriving (Functor, Applicative, Monad, MonadState ASTL.Module )
 
-runLLVM :: AST.Module -> LLVM a -> AST.Module
+runLLVM :: ASTL.Module -> LLVM a -> ASTL.Module
 runLLVM mod (LLVM m) = execState m mod
 
 -- Defines a function here the return type is Type 
-define ::  AST.Type -> String -> [(AST.Type, AST.Name)] -> [AST.BasicBlock] -> LLVM ()
+define ::  ASTL.Type -> String -> [(ASTL.Type, ASTL.Name)] -> [ASTL.BasicBlock] -> LLVM ()
 define retty label argtys body = addDef $
-  AST.GlobalDefinition $ functionDefaults {
-    name        = AST.Name label
+  ASTL.GlobalDefinition $ functionDefaults {
+    name        = ASTL.Name label
   , parameters  = ([Parameter ty nm [] | (ty, nm) <- argtys], False)
   , returnType  = retty
   , basicBlocks = body
   }
 
-addDef :: AST.Definition -> LLVM ()
+addDef :: ASTL.Definition -> LLVM ()
 addDef def = do 
-    prev <- gets AST.moduleDefinitions
-    modify $ \s -> s { AST.moduleDefinitions = def:prev }
+    prev <- gets ASTL.moduleDefinitions
+    modify $ \s -> s { ASTL.moduleDefinitions = prev ++ [def] }
 
 
 -- | BackEnd 
---   From Parsed AST to LLVM Definitions
-getDef :: ASTp.Func -> AST.Definition 
-getDef (ASTp.Func fname farg fret fbody ) = AST.GlobalDefinition $ functionDefaults {
+--   From Parsed ASTL to LLVM Definitions
+getDef :: ASTLp.Func -> ASTL.Definition 
+getDef (ASTLp.Func fname farg fret fbody ) = ASTL.GlobalDefinition $ functionDefaults {
                         name = getName fname,
                         parameters = ([Parameter (getType tp) (getName nm) [] | (tp, nm) <- farg], False),
                         returnType = (getType fret)
                         -- basicBlocks = getBlk fbody
                     }
 
-getExtern :: ASTp.Declaration -> AST.Definition
-getExtern (ASTp.ExternDecl fname fargs fret) = 
-    let (AST.GlobalDefinition func) = (getDef (ASTp.Func fname fargs fret []))
-    in (AST.GlobalDefinition $ func {
+getExtern :: ASTLp.Declaration -> ASTL.Definition
+getExtern (ASTLp.ExternDecl fname fargs fret) = 
+    let (ASTL.GlobalDefinition func) = (getDef (ASTLp.Func fname fargs fret []))
+    in (ASTL.GlobalDefinition $ func {
         linkage = Linkage.External
         })
 
 
-getType :: ASTp.Type -> TypeQ.Type
-getType ASTp.IntC = AST.IntegerType 32
+getType :: ASTLp.Type -> TypeQ.Type
+getType ASTLp.IntC = ASTL.IntegerType 32
 
-getName :: ASTp.Name -> AST.Name
-getName = AST.Name
+getName :: ASTLp.Name -> ASTL.Name
+getName = ASTL.Name
 
 intL :: TypeQ.Type
-intL = AST.IntegerType 32
+intL = ASTL.IntegerType 32
 
-getArgList :: ASTp.ArgList -> [(AST.Type, AST.Name)]
+getArgList :: ASTLp.ArgList -> [(ASTL.Type, ASTL.Name)]
 getArgList = map (\(t, n) -> (getType t, getName n))
 
--- getBlk :: [ASTp.Expr] -> [GLB.BasicBlock]
--- getBlk
 
 type Names = Map.Map String Int
 
@@ -105,15 +133,15 @@ unikName name mapping = case Map.lookup name mapping of
         Nothing -> (name, Map.insert name 1 mapping)
         Just idx -> (name ++ (show idx) , Map.insert name (idx+1) mapping)
 
-type SymbolTable = [(String, AST.Operand)]
+type SymbolTable = [(String, ASTL.Operand)]
 
 
 
 
 data CodegenState
   = CodegenState {
-    currentBlock :: AST.Name                     -- Name of the active block to append to
-  , blocks       :: Map.Map AST.Name BlockState  -- Blocks for function
+    currentBlock :: ASTL.Name                     -- Name of the active block to append to
+  , blocks       :: Map.Map ASTL.Name BlockState  -- Blocks for function
   , symtab       :: SymbolTable              -- Function scope symbol table
   , blockCount   :: Int                      -- Count of basic blocks
   , count        :: Word                     -- Count of unnamed instructions a.k.a like function args
@@ -123,21 +151,21 @@ data CodegenState
 data BlockState
   = BlockState {
     idx   :: Int                            -- Block index
-  , stack :: [AST.Named AST.Instruction]            -- Stack of instructions Head --> |_| |_| |_| |_|
-  , term  :: Maybe (AST.Named AST.Terminator)       -- Block terminator
+  , stack :: [ASTL.Named ASTL.Instruction]            -- Stack of instructions Head --> |_| |_| |_| |_|
+  , term  :: Maybe (ASTL.Named ASTL.Terminator)       -- Block terminator
   } deriving Show
 
 
 newtype Codegen a = Codegen { runCodegen :: State CodegenState a }
   deriving (Functor, Applicative, Monad, MonadState CodegenState )
 
-sortBlocks :: [(AST.Name, BlockState)] -> [(AST.Name, BlockState)]
+sortBlocks :: [(ASTL.Name, BlockState)] -> [(ASTL.Name, BlockState)]
 sortBlocks = sortBy (compare `on` (idx . snd))
 
 createBlocks :: CodegenState -> [BasicBlock]
 createBlocks m = map makeBlock $ sortBlocks $ Map.toList (blocks m)
 
-makeBlock :: (AST.Name, BlockState) -> BasicBlock
+makeBlock :: (ASTL.Name, BlockState) -> BasicBlock
 makeBlock (l, (BlockState _ s t)) = BasicBlock l (reverse s) (maketerm t)
   where
     maketerm (Just x) = x
@@ -150,7 +178,7 @@ emptyBlock :: Int -> BlockState
 emptyBlock i = BlockState i [] Nothing
 
 emptyCodegen :: CodegenState
-emptyCodegen = CodegenState (AST.Name entryBlockName) Map.empty [] 1 0 Map.empty
+emptyCodegen = CodegenState (ASTL.Name entryBlockName) Map.empty [] 1 0 Map.empty
 
 execCodegen :: Codegen a -> CodegenState
 execCodegen m = execState (runCodegen m) emptyCodegen
@@ -160,7 +188,7 @@ execCodegen m = execState (runCodegen m) emptyCodegen
 
 -- Modifies the current block that is being used using the block name arg.
 -- Returns the input bname after successfull updation
-setBlock :: AST.Name -> Codegen AST.Name
+setBlock :: ASTL.Name -> Codegen ASTL.Name
 setBlock bname = do
   modify $ \s -> s { currentBlock = bname }
   return bname
@@ -169,8 +197,8 @@ setBlock bname = do
 
 -- Alloca Returns an instruction of declaration of 
 -- a var of allocatedType :: Type , numElements , alignment , metadata 
-alloca :: AST.Type -> Codegen AST.Operand
-alloca ty = instr $ AST.Alloca ty Nothing 0 [] 
+alloca :: ASTL.Type -> Codegen ASTL.Operand
+alloca ty = instr $ ASTL.Alloca ty Nothing 0 [] 
 
 
 -- | Updates the count of unnamed instructions and returns total no. of unnamed instructions
@@ -181,10 +209,10 @@ fresh = do
     return $ i + 1
 
 
-instr :: AST.Instruction -> Codegen (AST.Operand)
+instr :: ASTL.Instruction -> Codegen (ASTL.Operand)
 instr ins = do
     n <- fresh  -- Updated the count of variables/ n=count
-    let ref = (AST.UnName n)  -- a number for a nameless thing
+    let ref = (ASTL.UnName n)  -- a number for a nameless thing
     blk <- current -- got the current blockState 
     let i = stack blk  -- Got the list of statements 
     modifyBlock (blk { stack = (ref := ins) : i } ) -- (ref := ins ) is a Named Instruction with name ref and ins and instruction 
@@ -213,13 +241,13 @@ modifyBlock new = do
 
 
 
--- Update the symbol table with the current value and identifier
-assign :: String -> AST.Operand -> Codegen ()
+-- | Update the symbol table with the current value and identifier
+assign :: String -> ASTL.Operand -> Codegen ()
 assign var x = do
   lcls <- gets symtab
   modify $ \s -> s { symtab = [(var, x)] ++ lcls }
 
-getvar :: String -> Codegen AST.Operand
+getvar :: String -> Codegen ASTL.Operand
 getvar var = do
   syms <- gets symtab
   case lookup var syms of
@@ -231,12 +259,12 @@ getvar var = do
 -- Takes the operand and create a terminator based on that . 
 -- Do simply names the instruction 
 -- terminator just uplift the value further to Codegen while updating the blockState
-ret :: AST.Operand -> Codegen (AST.Named AST.Terminator)
-ret val = terminator $ AST.Do $ AST.Ret (Just val) []
+ret :: ASTL.Operand -> Codegen (ASTL.Named ASTL.Terminator)
+ret val = terminator $ ASTL.Do $ ASTL.Ret (Just val) []
 
 
 -- Update the terminator of the current active block
-terminator :: AST.Named AST.Terminator -> Codegen (AST.Named AST.Terminator)
+terminator :: ASTL.Named ASTL.Terminator -> Codegen (ASTL.Named ASTL.Terminator)
 terminator trm = do
   blk <- current
   modifyBlock (blk { term = Just trm })
@@ -244,14 +272,14 @@ terminator trm = do
 
 
 -- Takes a name and gives you an operands
-local ::  AST.Name -> AST.Operand
-local = AST.LocalReference TypeQ.double
+local ::  ASTL.Name -> ASTL.Operand
+local = ASTL.LocalReference intL
 
 
 
 -- Load And Store operations
-store :: AST.Operand -> AST.Operand -> Codegen AST.Operand
+store :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
 store ptr val = instr $ Store False ptr val Nothing 0 []
 
-load :: AST.Operand -> Codegen AST.Operand
+load :: ASTL.Operand -> Codegen ASTL.Operand
 load ptr = instr $ Load False ptr Nothing 0 []

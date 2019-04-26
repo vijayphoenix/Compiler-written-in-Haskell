@@ -4,25 +4,25 @@ module Main where
 import System.Console.Haskeline 
 import Control.Monad.Except
 
-import qualified LLVM.AST as AST
+import qualified LLVM.AST as ASTL
 import Parser
 import Lexer
 import Emit
 
-firstModule :: AST.Module
-firstModule = AST.defaultModule { AST.moduleName = "First Module" }
+firstModule :: ASTL.Module
+firstModule = ASTL.defaultModule { ASTL.moduleName = "First Module" }
 
 main :: IO ()
 main = repl
 
-eval :: AST.Module -> String -> IO (Maybe AST.Module)
+eval :: ASTL.Module -> String -> IO (Maybe ASTL.Module)
 eval mod source = do
-  let res  = (parse funcParser "Term" source)
+  let res  = (parse moduleParser "Term" source)
   case res of 
     Left err -> print err >> return Nothing
     Right ex -> do 
       print ex
-      ast <- codegen mod [ex]
+      ast <- moduleGen mod ex
       return $ Just mod
 
 repl :: IO ()
