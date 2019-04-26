@@ -81,6 +81,7 @@ data Op
     | Mul 
     | Divide
     | Null
+    | LessThan
     deriving (Show, Ord, Eq)
 
 data Type 

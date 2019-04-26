@@ -7,6 +7,7 @@ module Emit (
     fsub,
     fmul,
     fdiv,
+    lesser,
 
     exprGen,
     binOpCallGen,
@@ -71,6 +72,7 @@ binops = Map.fromList [
     , (ASTp.Minus, fsub)
     , (ASTp.Mul, fmul)
     , (ASTp.Divide, fdiv)
+    , (ASTp.LessThan, lesser)
   ]
 
 
@@ -86,6 +88,11 @@ fmul a b = instr $ ASTL.Mul False False a b []
 
 fdiv :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
 fdiv a b = instr $ ASTL.UDiv False a b []
+
+lesser :: ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
+lesser a b = do
+  test <- fcmp IP.ULT a b
+  uitofp intL test
 
 externf :: ASTL.Name -> ASTL.Operand
 externf = ConstantOperand . C.GlobalReference intL

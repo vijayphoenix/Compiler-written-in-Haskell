@@ -42,3 +42,8 @@ repl = runInputT defaultSettings (loop firstModule)
 liftError :: ExceptT String IO a -> IO a
 liftError = runExceptT >=> either fail return
 
+filesrc :: FilePath
+filesrc = "input.txt"
+
+processFile :: IO (Maybe ASTL.Module)
+processFile = (readFile filesrc >>= eval firstModule)

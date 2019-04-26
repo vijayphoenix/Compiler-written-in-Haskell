@@ -1,7 +1,11 @@
 module Parser (
     moduleParser,
     funcParser,
-    ifthenParser
+    ifthenParser,
+    binOpCallStmtParser,
+    binOpCallParser,
+    literalStmtParser,
+    funcCallStmtParser
 )where 
 
 import Lexer 

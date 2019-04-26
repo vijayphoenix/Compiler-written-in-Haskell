@@ -2,16 +2,24 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module CodeGen (
-  LLVM(..),
+    LLVM(..),
   runLLVM,
+  execCodegen,
+
   define,
   addDef,
-  getDef,
+  
   getType, 
   getName,
   intL,
   getArgList,
+  
+  Codegen(..),
   Names(..),
+  CodegenState(..),
+  BlockState(..),
+  unikName,
+
   load, 
   store,
   local,
@@ -19,24 +27,23 @@ module CodeGen (
   ret,
   getvar,
   assign,
-  createBlocks,
-  external,
-  Codegen(..),
-  CodegenState(..),
-  BlockState(..),
-  instr,
   alloca,
-  execCodegen,
+  instr,
+  external,
+  
+  createBlocks,
   setBlock,
-  getBlock,
   emptyBlock,
-  unikName,
   entryBlockName,
+
+  getBlock,
+
   br,
   phi,
   cbr,
-  fcmp
-
+  fcmp,
+  uitofp
+  
 )where 
 
 
@@ -71,17 +78,17 @@ import qualified AST as ASTLp
 
 
 
--- -- 1. Variable Declaration Done
--- var = GLB.globalVariableDefaults { name = "Var1", GLB.type' = int }
+-- | utility Functions for Working on Module
+-- | LLVM monad to manage the contained LLVM module State
 
--- | Utility Functions for Working on Module
 newtype LLVM a = LLVM (State ASTL.Module a)
     deriving (Functor, Applicative, Monad, MonadState ASTL.Module )
 
+-- | execute the given LLVM State with the given module as state
 runLLVM :: ASTL.Module -> LLVM a -> ASTL.Module
 runLLVM mod (LLVM m) = execState m mod
 
--- Defines a function here the return type is Type 
+-- | Action to add a function to state 
 define ::  ASTL.Type -> String -> [(ASTL.Type, ASTL.Name)] -> [ASTL.BasicBlock] -> LLVM ()
 define retty label argtys body = addDef $
   ASTL.GlobalDefinition $ functionDefaults {
@@ -92,18 +99,18 @@ define retty label argtys body = addDef $
   }
 
 
--- | Defines a function here the return type is Type 
+-- | Action to add external function 
 external ::  ASTL.Type -> String -> [(ASTL.Type, ASTL.Name)] -> LLVM ()
 external retty label argtys = define retty label argtys []
 
+-- | Action to add definition to the LLVM state
 addDef :: ASTL.Definition -> LLVM ()
 addDef def = do 
     prev <- gets ASTL.moduleDefinitions
     modify $ \s -> s { ASTL.moduleDefinitions = prev ++ [def] }
+------------------------------------------------
 
 
--- | BackEnd 
---   From Parsed ASTL to LLVM Definitions
 getDef :: ASTLp.Func -> ASTL.Definition 
 getDef (ASTLp.Func fname farg fret fbody ) = ASTL.GlobalDefinition $ functionDefaults {
                         name = getName fname,
@@ -120,6 +127,7 @@ getExtern (ASTLp.ExternDecl fname fargs fret) =
         })
 
 
+-- | Utility Function for conversion and constant
 getType :: ASTLp.Type -> TypeQ.Type
 getType ASTLp.IntC = ASTL.IntegerType 32
 
@@ -131,45 +139,50 @@ intL = ASTL.IntegerType 32
 
 getArgList :: ASTLp.ArgList -> [(ASTL.Type, ASTL.Name)]
 getArgList = map (\(t, n) -> (getType t, getName n))
+------------------------------------------------
 
 
-type Names = Map.Map String Int
 
 
--- Takes a name and check if present in names and then checks if the name already there or not.
+-- | Takes a name and check if present in names and then checks if the name already there or not.
 -- returns updated map and prev. name if any otherwise the name itself. 
--- Can be used to ask if this name is avaible and if so then use it otherwise it returns you 
--- an updated name that can be used.
 unikName :: String -> Names -> (String, Names)
 unikName name mapping = case Map.lookup name mapping of 
         Nothing -> (name, Map.insert name 1 mapping)
         Just idx -> (name ++ (show idx) , Map.insert name (idx+1) mapping)
 
+
+-- | Data Structure that the State stores inside the LLVM monad
+type Names = Map.Map String Int
 type SymbolTable = [(String, ASTL.Operand)]
 
 
 
-
+-- | A CodegenState represent a file/ code file and the current execution block
 data CodegenState
   = CodegenState {
     currentBlock :: ASTL.Name                     -- Name of the active block to append to
   , blocks       :: Map.Map ASTL.Name BlockState  -- Blocks for function
-  , symtab       :: SymbolTable              -- Function scope symbol table
-  , blockCount   :: Int                      -- Count of basic blocks
-  , count        :: Word                     -- Count of unnamed instructions a.k.a like function args
-  , names        :: Names                    -- Name Supply
+  , symtab       :: SymbolTable                   -- Function scope symbol table
+  , blockCount   :: Int                           -- Count of basic blocks
+  , count        :: Word                          -- Count of unnamed instructions a.k.a like function args
+  , names        :: Names                         -- Name Supply
   } deriving Show
 
+-- | A BlockState represent a function section 
 data BlockState
   = BlockState {
-    idx   :: Int                            -- Block index
+    idx   :: Int                                      -- Block index
   , stack :: [ASTL.Named ASTL.Instruction]            -- Stack of instructions Head --> |_| |_| |_| |_|
   , term  :: Maybe (ASTL.Named ASTL.Terminator)       -- Block terminator
   } deriving Show
 
 
+-- | A action executor on LLVM state
 newtype Codegen a = Codegen { runCodegen :: State CodegenState a }
   deriving (Functor, Applicative, Monad, MonadState CodegenState )
+
+------------------------------- Block Operations ------------------------
 
 sortBlocks :: [(ASTL.Name, BlockState)] -> [(ASTL.Name, BlockState)]
 sortBlocks = sortBy (compare `on` (idx . snd))
@@ -189,21 +202,23 @@ entryBlockName = "entry"
 emptyBlock :: Int -> BlockState
 emptyBlock i = BlockState i [] Nothing
 
-emptyCodegen :: CodegenState
-emptyCodegen = CodegenState (ASTL.Name entryBlockName) Map.empty [] 1 0 Map.empty
 
-execCodegen :: Codegen a -> CodegenState
-execCodegen m = execState (runCodegen m) emptyCodegen
-
-
-------------------------------- Block Operations ------------------------
-
--- Modifies the current block that is being used using the block name arg.
+-- | Modifies the current block that is being used using the block name arg.
 -- Returns the input bname after successfull updation
 setBlock :: ASTL.Name -> Codegen ASTL.Name
 setBlock bname = do
   modify $ \s -> s { currentBlock = bname }
   return bname
+
+------------------------------------------------------------------------
+
+------------------------- CodeGen constants and actions ---------------
+
+emptyCodegen :: CodegenState
+emptyCodegen = CodegenState (ASTL.Name entryBlockName) Map.empty [] 1 0 Map.empty
+
+execCodegen :: Codegen a -> CodegenState
+execCodegen m = execState (runCodegen m) emptyCodegen
 
 getBlock :: Codegen ASTL.Name
 getBlock = gets currentBlock
@@ -224,13 +239,12 @@ fresh = do
 
 instr :: ASTL.Instruction -> Codegen (ASTL.Operand)
 instr ins = do
-    n <- fresh  -- Updated the count of variables/ n=count
-    let ref = (ASTL.UnName n)  -- a number for a nameless thing
-    blk <- current -- got the current blockState 
-    let i = stack blk  -- Got the list of statements 
-    modifyBlock (blk { stack = (ref := ins) : i } ) -- (ref := ins ) is a Named Instruction with name ref and ins and instruction 
-    return $ local ref -- Returning the operands
-
+    n <- fresh                  -- Updated the count of variables/ n=count
+    let ref = (ASTL.UnName n)   -- a number for a nameless thing
+    blk <- current              -- got the current blockState 
+    let i = stack blk           -- Got the list of statements 
+    modifyBlock (blk { stack = (ref := ins) : i } )     -- (ref := ins ) is a Named Instruction with name ref and ins and instruction 
+    return $ local ref          -- Returning the operands
 
 
 current :: Codegen BlockState
@@ -243,13 +257,12 @@ current = do
 
 
 
--- Updating the blocks with due to addition of named instructions 
+-- | Updating the blocks with due to addition of named instructions 
 -- Simply replacing whole prev block with the new one 
 modifyBlock :: BlockState -> Codegen ()
 modifyBlock new = do
   active <- gets currentBlock 
   modify $ \s -> s { blocks = Map.insert active new (blocks s) }
-
 
 
 
@@ -268,15 +281,14 @@ getvar var = do
     Nothing -> error $ "Local variable not in scope: " ++ show var
 
 
-
--- Takes the operand and create a terminator based on that . 
+-- | Takes the operand and create a terminator based on that . 
 -- Do simply names the instruction 
 -- terminator just uplift the value further to Codegen while updating the blockState
 ret :: ASTL.Operand -> Codegen (ASTL.Named ASTL.Terminator)
 ret val = terminator $ ASTL.Do $ ASTL.Ret (Just val) []
 
 
--- Update the terminator of the current active block
+-- | Update the terminator of the current active block
 terminator :: ASTL.Named ASTL.Terminator -> Codegen (ASTL.Named ASTL.Terminator)
 terminator trm = do
   blk <- current
@@ -284,7 +296,7 @@ terminator trm = do
   return trm
 
 
--- Takes a name and gives you an operands
+-- | Takes a name and gives you an operands
 local ::  ASTL.Name -> ASTL.Operand
 local = ASTL.LocalReference intL
 
@@ -309,3 +321,6 @@ phi ty incoming = instr $ ASTL.Phi ty incoming []
 
 fcmp :: IP.IntegerPredicate -> ASTL.Operand -> ASTL.Operand -> Codegen ASTL.Operand
 fcmp cond a b = instr $ ICmp cond a b []
+
+uitofp :: ASTL.Type -> ASTL.Operand -> Codegen ASTL.Operand
+uitofp ty a = instr $ ASTL.UIToFP a ty []
