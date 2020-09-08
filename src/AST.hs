@@ -22,21 +22,20 @@ module AST (
 -- All the operators are left associative
 
 -- Command = Expr ;
--- Expr : DeclarationStmt | FuncCallStmt | LiteralStmt | (Expr)
+-- Expr : DeclarationStmt | FuncCallStmt | LiteralStmt | IfthenStmt | (Expr)
 
--- DeclarationStmt : ExternDecl | VarDecl
+-- DeclarationStmt : ExternDecl 
 
 -- ExternDecl : extern Name([ArgList]) : Type 
--- VarDecl    : Type VList 
 
--- Type : int | string 
+-- Type : int 
 -- VList: Name[, VList]
 
--- FuncCallStmt : BinOpCall | Call 
+-- FuncCallStmt : Call 
 -- BinOpCall : Expr Op Expr 
 -- Call : Name ( [Args] ) 
 
--- Op : + | - | * | / 
+-- Op : + | - | * | / | <
 -- Args : Expr[, Args]
 
 -- LiteralStmt : StrLiteral  | IntLiteral 
@@ -71,7 +70,7 @@ data Expr
     | BinOpCallStmt     BinOpCall   -- Done 
     | LiteralStmt       Literal     -- Done
     | Var               Name        -- Done
-    | IfthenStmt        Ifthen      -- Left
+    | IfthenStmt        Ifthen      -- Done
     deriving (Show)
 
 

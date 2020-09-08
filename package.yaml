@@ -1,10 +1,10 @@
 name:                Haskull
 version:             0.1.0.0
-github:              "https://github.com/IITH-SBJoshi/haskell-11"
-license:             BSD3
-author:              "Vijay"
+github:              "https://github.com/vijayphoenix/Compiler-written-in-Haskell"
+license:             MIT
+author:              "Vijay Tadikamalla"
 maintainer:          "cs17btech11040@iith.ac.in"
-copyright:           "2019 Vijay"
+copyright:           "2019 Vijay Tadikamalla"
 
 extra-source-files:
 - README.md
@@ -17,7 +17,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/IITH-SBJoshi/haskell-11#readme>
+description:         Please see the README on GitHub at <https://github.com/vijayphoenix/Compiler-written-in-Haskell#readme>
 
 dependencies:
 - base >= 4.7 && < 5

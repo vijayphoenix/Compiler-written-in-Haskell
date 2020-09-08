@@ -1,0 +1,27 @@
+Some example functions:
+
+def eq(int x, int y):int { if(x-y) then {0} else {1};}
+
+extern int abs(int x):int ;
+
+def leq(int x, int y) : int { if(x) then { if (y) then { leq(x-1, y-1) } else {1} }  else {2}; }    {- | x<=y | 2-> y>=x | 1-> x>y | -}
+def gt(int x, int y) : int { if( eq( leq(int x, int y), 1 )  )  then {1} else {2} ;}                {- | x>y ? 1 : 2 | -}
+
+def fib(int x):int { if(x-1) then { if (x) then { fib(x-1)+fib(x-2) } else {0} }   else {1}; }      {- | x=0 ? 1 : x*(x-1)! | -}
+def fact(int x):int { if(x) then { x*fact(x-1) } else {1}; }
+
+def mod(int x, int y): int { x - (x/y)*y; }
+def pow(int x, int y): int { if(y) then { x*pow(x, y-1) } else {1} ; }
+def powmod(int x, int y, int p): int { if(y) then { mod( x * powmod(x, y-1), p) } else {1}; }
+def nCr(int n, int r): int { fact(n)/fact(n-r)/fact(r);} 
+
+4 + 5*6 - 3*2 + 10/3 + 5*7;
+
+
+
+def pred(int x) : int { x-1 ;}  
+def succ(int x) : int { x+1 ;}
+
+
+def and(int x, int y) : int { if( eq( x+y , 2 ) ) then {1} else {0} ;}
+def or (int x, int y) : int { if( eq( x+y , 0 ) ) then {0} else {1} ;}

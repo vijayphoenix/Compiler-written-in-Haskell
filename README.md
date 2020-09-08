@@ -1,10 +1,10 @@
-[![CircleCI](https://circleci.com/gh/IITH-SBJoshi/haskell-11/tree/master.svg?style=svg&circle-token=72b4ba1854966fc5f4e58b1e3d0fc5a05cf4ad66)](https://circleci.com/gh/IITH-SBJoshi/haskell-11/tree/master)  
+[![Build Status](https://travis-ci.com/vijayphoenix/Compiler-written-in-Haskell.svg?token=67qmZmyfex1ST6G5tpZK&branch=master)](https://travis-ci.com/vijayphoenix/Compiler-written-in-Haskell)
 
 # Implementing a JIT Compiled Language with Haskell   
 
 ## About  
 
-The aim of the project was to implement a simple procedural language.    
+The project aimed to implement a simple procedural language.     
 We named it **HASKULL** :-)  
 The frontend is written in Haskell and the backend it managed LLVM-hs-pure package.   
 The project extensively uses Monads, State Monads, Applicative functors and Transformers.  
@@ -18,7 +18,7 @@ You will need GHC 7.8 or newer as well as LLVM 4.0.
 Clone the repository:    
 
 ```
-git clone "https://github.com/IITH-SBJoshi/haskell-11.git"
+git clone https://github.com/vijayphoenix/Compiler-written-in-Haskell.git
 ```
 
 Browse to the directory where all the files of this repository are located.  
@@ -37,7 +37,7 @@ stack repl
 ```
 Type "main" in the interactive console.  
 
-Write any code using following Syntax rules  
+Write any code using the following Syntax rules.   
 
 ```
 Syntax rules: 
@@ -47,14 +47,13 @@ All the symbol starting with lower-case letter are terminal(lexer units).
 All the operators are left associative
 
 Command = Expr ;
-Expr : DeclarationStmt | FuncCallStmt | LiteralStmt | Var | ifthenStmt | (Expr)
+Expr : DeclarationStmt| FuncCallStmt | LiteralStmt | ifthenStmt | (Expr)
 
-DeclarationStmt : ExternDecl | VarDecl
+DeclarationStmt : ExternDecl
 
 ExternDecl : extern Name([ArgList]) : Type 
-VarDecl    : Type VList 
 
-Type : int | string 
+Type : int 
 VList: Name[, VList]
 
 FuncCallStmt : Call 
@@ -63,13 +62,12 @@ Call : Name ( [Args] )
 BinOpCallStmt : BinOpCall
 BinOpCall : Expr Op Expr 
 
-Op : + | - | * | / | ; | = | <
+Op : + | - | * | / | ; | <
 reserved keywords: int char def extern string if then else
 Args : Expr[, Args]
 
-LiteralStmt : StrLiteral  | IntLiteral 
+LiteralStmt : IntLiteral 
 IntLiteral  : integer
-StrLiteral  : string
 
 Name : ident
 ArgList : Type Name[, ArgList]
@@ -79,7 +77,8 @@ Command-list = Command [Command-list]
 
 Command = Expr ;
 ```
-For more insight on the language grammer, refer to Language.hs, Lexer.hs, Parser.hs files.  
+Some sample example functions are provided in examples.txt file.
+For more insight on the language grammar, refer to Language.hs, AST.hs files.    
 
 
 ### Documentation  
@@ -100,7 +99,7 @@ stack haddock
 * [**Yogesh Singh**](https://github.com/yo5sh)  
 
 #### License  
-* [LICENSE](https://github.com/IITH-SBJoshi/haskell-11/blob/master/LICENSE)  
+* [LICENSE](LICENSE)  
 
 #### Acknowledgments  
 * [Haskell LLVM JIT Compiler Tutorial](http://www.stephendiehl.com/llvm)  
