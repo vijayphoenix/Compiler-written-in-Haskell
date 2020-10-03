@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/vijayphoenix/Compiler-written-in-Haskell.svg?token=67qmZmyfex1ST6G5tpZK&branch=master)](https://travis-ci.com/vijayphoenix/Compiler-written-in-Haskell)
+[![CircleCI](https://circleci.com/gh/vijayphoenix/Compiler-written-in-Haskell/tree/master.svg?style=svg)](https://circleci.com/gh/vijayphoenix/Compiler-written-in-Haskell/tree/master)
 
 # Implementing a JIT Compiled Language with Haskell   
 

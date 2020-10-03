@@ -8,12 +8,17 @@ jobs:
       - run:
           name: Set up
           command: |
-            apt-get -y update
             add-apt-repository -y ppa:hvr/ghc
-            apt-get install -y haskell-platform
+            apt-get update
             wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
+            add-apt-repository "deb http://apt.llvm.org/precise/ llvm-toolchain-precise main" -y
+            add-apt-repository "deb http://apt.llvm.org/precise/ llvm-toolchain-precise-4.0 main" -y
+            apt-get update
+            apt-get install libedit-dev -y
+            apt-get install -y llvm-4.0 llvm-4.0-dev
             alias llvm-config="llvm-config-4.0"
-            wget -qO- https://get.haskellstack.org/ | sh
+            export PATH="/usr/bin:$PATH"
+            apt-get install haskell-platform -y
             stack build
 workflows:
   version: 2
