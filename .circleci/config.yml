@@ -1,0 +1,22 @@
+version: 2.0
+jobs:
+  build_gcc_latest:
+    docker:
+      - image: fpco/stack-build:lts
+    steps:
+      - checkout
+      - run:
+          name: Set up
+          command: |
+            apt-get -y update
+            add-apt-repository -y ppa:hvr/ghc
+            apt-get install -y haskell-platform
+            wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key|sudo apt-key add -
+            alias llvm-config="llvm-config-4.0"
+            wget -qO- https://get.haskellstack.org/ | sh
+            stack build
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_gcc_latest
